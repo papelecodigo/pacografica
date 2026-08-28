@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#07101f" />
+  <meta name="theme-color" content="#0b1220" />
   <meta name="color-scheme" content="light" />
   <title>Caixa | Papel e Código</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,66 +16,38 @@
 
   <section id="loginView" class="login-view">
     <div class="login-shell">
-      <aside class="login-brand-panel">
-        <div class="brand-lockup brand-lockup-light">
-          <div class="brand-symbol" aria-hidden="true">
-            <svg viewBox="0 0 64 64" role="img">
-              <path class="brand-symbol-page" d="M13 5h28l10 10v44H13a8 8 0 0 1-8-8V13a8 8 0 0 1 8-8Z"/>
-              <path class="brand-symbol-fold" d="M41 5v10h10"/>
-              <path class="brand-symbol-code" d="m26 28-7 6 7 6M38 28l7 6-7 6M34 25l-5 18"/>
-            </svg>
-          </div>
-          <div class="brand-wordmark">
-            <strong>papel</strong>
-            <span>e código</span>
-          </div>
+      <aside class="login-brand">
+        <div class="brand-signature brand-signature-light">
+          <img src="./assets/brand-mark.png" alt="Símbolo Papel e Código" class="brand-image">
+          <div><strong>papel</strong><span>e código</span></div>
         </div>
-
         <div class="login-brand-copy">
-          <span class="brand-kicker">GESTÃO DA GRÁFICA</span>
-          <h1>Seu caixa, claro e organizado.</h1>
-          <p>Vendas, movimentações e fechamento em um painel simples para a rotina da Papel e Código.</p>
+          <span class="brand-kicker">CAIXA DA GRÁFICA</span>
+          <h1>Venda, receba<br>e siga o fluxo.</h1>
+          <p>Um caixa simples para a rotina da Papel e Código.</p>
         </div>
-
-        <div class="brand-wave brand-wave-one" aria-hidden="true"></div>
-        <div class="brand-wave brand-wave-two" aria-hidden="true"></div>
+        <small>Onde sua marca acontece.</small>
       </aside>
 
-      <main class="login-form-panel">
+      <main class="login-panel">
         <div class="login-card">
           <div class="mobile-login-brand">
-            <div class="brand-symbol compact" aria-hidden="true">
-              <svg viewBox="0 0 64 64">
-                <path class="brand-symbol-page" d="M13 5h28l10 10v44H13a8 8 0 0 1-8-8V13a8 8 0 0 1 8-8Z"/>
-                <path class="brand-symbol-fold" d="M41 5v10h10"/>
-                <path class="brand-symbol-code" d="m26 28-7 6 7 6M38 28l7 6-7 6M34 25l-5 18"/>
-              </svg>
-            </div>
+            <img src="./assets/brand-mark.png" alt="Papel e Código">
             <strong>Papel e Código</strong>
           </div>
-          <div class="login-heading">
-            <span class="eyebrow">ACESSO RESTRITO</span>
-            <h2>Entrar no caixa</h2>
-            <p>Use seu e-mail e senha cadastrados para acessar o sistema.</p>
-          </div>
-
-          <form id="loginForm" class="stack-lg">
-            <label class="field-label">E-mail
-              <span class="field-control">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6.5A2.5 2.5 0 0 1 5.5 4h13A2.5 2.5 0 0 1 21 6.5v11a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5v-11Zm2 .1 7 5.1 7-5.1"/></svg>
-                <input id="email" type="email" autocomplete="email" placeholder="seu@email.com" required>
-              </span>
+          <p class="eyebrow">ACESSO</p>
+          <h2>Entrar no caixa</h2>
+          <p class="muted login-subtitle">Use o acesso cadastrado no sistema.</p>
+          <form id="loginForm" class="form-stack">
+            <label>E-mail
+              <input id="email" type="email" autocomplete="email" placeholder="seu@email.com" required>
             </label>
-            <label class="field-label">Senha
-              <span class="field-control">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V8a5 5 0 0 1 10 0v2m-11 0h12a2 2 0 0 1 2 2v7H4v-7a2 2 0 0 1 2-2Zm6 4v2"/></svg>
-                <input id="password" type="password" autocomplete="current-password" placeholder="••••••••" required>
-              </span>
+            <label>Senha
+              <input id="password" type="password" autocomplete="current-password" placeholder="••••••••" required>
             </label>
-            <button class="btn btn-primary btn-block btn-lg" type="submit">Entrar no sistema</button>
+            <button class="btn btn-primary btn-block btn-lg" type="submit">Entrar</button>
           </form>
-          <p id="configWarning" class="warning hidden">Configure o Supabase em <strong>config.js</strong> antes de usar o login.</p>
-          <p class="login-footnote">Ambiente interno • Papel e Código</p>
+          <p id="configWarning" class="warning hidden">Configure a conexão do Supabase em <strong>config.js</strong>.</p>
         </div>
       </main>
     </div>
@@ -83,248 +55,244 @@
 
   <div id="appView" class="app hidden">
     <aside class="sidebar">
-      <div class="sidebar-top">
+      <div>
         <div class="sidebar-brand">
-          <div class="brand-symbol compact sidebar-logo" aria-hidden="true">
-            <svg viewBox="0 0 64 64">
-              <path class="brand-symbol-page" d="M13 5h28l10 10v44H13a8 8 0 0 1-8-8V13a8 8 0 0 1 8-8Z"/>
-              <path class="brand-symbol-fold" d="M41 5v10h10"/>
-              <path class="brand-symbol-code" d="m26 28-7 6 7 6M38 28l7 6-7 6M34 25l-5 18"/>
-            </svg>
-          </div>
-          <div class="sidebar-wordmark">
-            <strong>papel</strong>
-            <span>e código</span>
-          </div>
+          <img src="./assets/brand-mark.png" alt="Papel e Código" class="sidebar-logo">
+          <div class="sidebar-brand-name"><strong>papel</strong><span>e código</span></div>
         </div>
 
-        <div class="sidebar-caption">CAIXA DA GRÁFICA</div>
-
+        <div class="sidebar-caption">CAIXA</div>
         <nav class="nav" aria-label="Navegação principal">
           <button class="nav-item active" data-section="dashboard">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13h6V4H4v9Zm0 7h6v-4H4v4Zm10 0h6v-9h-6v9Zm0-16v4h6V4h-6Z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M4 13h6V4H4v9Zm0 7h6v-4H4v4Zm10 0h6v-9h-6v9Zm0-16v4h6V4h-6Z"/></svg>
             <span>Visão geral</span>
           </button>
           <button class="nav-item" data-section="sale">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
             <span>Nova venda</span>
           </button>
           <button class="nav-item" data-section="cash">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v10H4V7Zm3 0V5h10v2m-7 5h4"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M4 7h16v10H4zM8 12h.01M16 12h.01M12 9.5v5"/></svg>
             <span>Movimentações</span>
           </button>
           <button class="nav-item" data-section="history">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7v5l3 2m5-2a8 8 0 1 1-2.3-5.7L20 8.5V4"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
             <span>Histórico</span>
-          </button>
-          <button class="nav-item" data-section="close">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h12v16H6V4Zm3 4h6M9 12h6M9 16h4"/></svg>
-            <span>Fechamento</span>
           </button>
         </nav>
       </div>
 
-      <div class="sidebar-bottom">
-        <div class="sidebar-help">
-          <span class="sidebar-help-dot"></span>
-          <div><strong>Sistema online</strong><small>Dados salvos com segurança</small></div>
-        </div>
-        <button id="logoutBtn" class="btn btn-sidebar-logout">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 5H5v14h5M14 8l4 4-4 4m4-4H9"/></svg>
+      <div class="sidebar-footer">
+        <div class="system-state"><i></i><span>Sistema online</span></div>
+        <button id="logoutBtn" class="logout-btn">
+          <svg viewBox="0 0 24 24"><path d="M10 5H5v14h5M14 8l4 4-4 4M18 12H9"/></svg>
           <span>Sair</span>
         </button>
       </div>
     </aside>
 
     <main class="main">
-      <div class="main-inner">
-        <header class="topbar">
-          <div class="page-heading">
-            <p class="eyebrow" id="todayLabel"></p>
-            <h2 id="pageTitle">Visão geral</h2>
-            <p class="page-subtitle">Acompanhe o movimento da gráfica em tempo real.</p>
-          </div>
-          <div class="topbar-actions">
-            <span id="cashStatus" class="status-chip"><span class="status-dot"></span>Caixa fechado</span>
-            <button id="openCashBtn" class="btn btn-primary">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
-              Abrir caixa
-            </button>
-          </div>
-        </header>
+      <header class="topbar">
+        <div class="topbar-copy">
+          <p class="eyebrow" id="todayLabel"></p>
+          <h2 id="pageTitle">Visão geral</h2>
+        </div>
+        <button id="newSaleTopBtn" class="btn btn-primary top-action">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          Nova venda
+        </button>
+      </header>
 
-        <section id="section-dashboard" class="section active">
-          <div class="cards four">
-            <article class="metric metric-sales">
-              <div class="metric-head"><span>Vendas hoje</span><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M5 5h14v14H5V5Zm3 3h8M8 12h8M8 16h5"/></svg></div></div>
-              <strong id="metricSales">R$ 0,00</strong>
-              <small id="metricSalesCount">0 vendas</small>
-            </article>
-            <article class="metric metric-income">
-              <div class="metric-head"><span>Entradas</span><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="m7 14 5-5 5 5M12 9v10M5 5h14"/></svg></div></div>
-              <strong id="metricIncome">R$ 0,00</strong>
-              <small>movimentações do caixa</small>
-            </article>
-            <article class="metric metric-expense">
-              <div class="metric-head"><span>Saídas</span><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="m7 10 5 5 5-5M12 15V5M5 19h14"/></svg></div></div>
-              <strong id="metricExpense">R$ 0,00</strong>
-              <small>movimentações do caixa</small>
-            </article>
-            <article class="metric metric-balance accent">
-              <div class="metric-head"><span>Saldo do caixa</span><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M4 7h16v10H4V7Zm12 3h4v4h-4a2 2 0 0 1 0-4Z"/></svg></div></div>
-              <strong id="metricBalance">R$ 0,00</strong>
-              <small>saldo esperado no momento</small>
-            </article>
-          </div>
+      <section id="section-dashboard" class="section active">
+        <div class="dashboard-strip">
+          <article class="metric metric-main">
+            <span class="metric-label">Vendas hoje</span>
+            <strong id="metricSales">R$ 0,00</strong>
+            <small id="metricSalesCount">0 vendas</small>
+          </article>
+          <article class="metric">
+            <span class="metric-label">Entradas</span>
+            <strong id="metricIncome">R$ 0,00</strong>
+            <small>movimentações</small>
+          </article>
+          <article class="metric">
+            <span class="metric-label">Saídas</span>
+            <strong id="metricExpense">R$ 0,00</strong>
+            <small>movimentações</small>
+          </article>
+          <article class="metric metric-balance">
+            <span class="metric-label">Movimento líquido</span>
+            <strong id="metricBalance">R$ 0,00</strong>
+            <small>vendas + entradas − saídas</small>
+          </article>
+        </div>
 
-          <div class="grid-2 dashboard-grid">
-            <article class="panel">
-              <div class="panel-head">
-                <div><p class="eyebrow">HOJE</p><h3>Recebimentos por forma</h3><p class="panel-subtitle">Distribuição das vendas registradas.</p></div>
+        <div class="dashboard-grid">
+          <article class="panel panel-payments">
+            <div class="panel-head">
+              <div><p class="eyebrow">RECEBIMENTOS</p><h3>Por forma de pagamento</h3></div>
+            </div>
+            <div id="paymentSummary" class="payment-list"></div>
+          </article>
+
+          <article class="panel panel-recent">
+            <div class="panel-head">
+              <div><p class="eyebrow">HOJE</p><h3>Últimas vendas</h3></div>
+              <button class="text-action" data-go="history">Ver todas</button>
+            </div>
+            <div id="recentSales" class="empty-state">Nenhuma venda registrada hoje.</div>
+          </article>
+        </div>
+      </section>
+
+      <section id="section-sale" class="section">
+        <div class="sale-layout">
+          <div class="sale-editor">
+            <article class="panel customer-panel">
+              <div class="panel-title-line">
+                <span class="step-number">01</span>
+                <div><h3>Atendimento</h3><p>Quem vendeu e para quem estamos vendendo.</p></div>
               </div>
-              <div id="paymentSummary" class="payment-list"></div>
-            </article>
 
-            <article class="panel">
-              <div class="panel-head">
-                <div><p class="eyebrow">MOVIMENTO</p><h3>Últimas vendas</h3><p class="panel-subtitle">Os registros mais recentes do dia.</p></div>
-                <button class="link-btn" data-go="history">Ver histórico <span>→</span></button>
+              <div class="customer-grid">
+                <label>Responsável pela venda
+                  <select id="saleSeller" required>
+                    <option value="">Selecione</option>
+                    <option value="IGOR">IGOR</option>
+                    <option value="JHONATAN">JHONATAN</option>
+                    <option value="BEATRIZ">BEATRIZ</option>
+                  </select>
+                </label>
+                <label>Cliente
+                  <input id="saleCustomer" placeholder="Nome do cliente">
+                </label>
+                <label>Contato / WhatsApp
+                  <div class="input-action-group">
+                    <input id="salePhone" inputmode="tel" placeholder="(31) 99999-9999">
+                    <button id="saleWhatsappBtn" class="field-action whatsapp" type="button" title="Abrir WhatsApp" aria-label="Abrir WhatsApp do cliente">
+                      <svg viewBox="0 0 24 24"><path d="M20 11.5a8 8 0 0 1-11.8 7L4 20l1.5-4.1A8 8 0 1 1 20 11.5Z"/><path d="M9 8.5c.5 2.1 2 3.6 4.3 4.5"/></svg>
+                    </button>
+                  </div>
+                </label>
               </div>
-              <div id="recentSales" class="list-empty empty-state">Nenhuma venda registrada hoje.</div>
+
+              <label class="note-field">Observação
+                <input id="saleNote" placeholder="Ex.: retirar amanhã, acabamento fosco...">
+              </label>
             </article>
-          </div>
-        </section>
 
-        <section id="section-sale" class="section">
-          <div class="section-intro">
-            <div><span class="eyebrow">ATENDIMENTO</span><h3>Registrar nova venda</h3><p>Adicione os serviços ou produtos, confira o total e finalize o pagamento.</p></div>
-          </div>
-
-          <div class="grid-sale">
-            <article class="panel sale-builder">
-              <div class="panel-head">
-                <div><p class="eyebrow">DADOS DA VENDA</p><h3>Cliente e itens</h3></div>
-                <button id="addItemBtn" class="btn btn-secondary">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+            <article class="panel items-panel">
+              <div class="panel-title-line items-title">
+                <span class="step-number">02</span>
+                <div><h3>Itens da venda</h3><p>Adicione os produtos ou serviços.</p></div>
+                <button id="addItemBtn" class="btn btn-outline" type="button">
+                  <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
                   Adicionar item
                 </button>
               </div>
-
-              <div class="form-grid two sale-meta">
-                <label class="field-label">Cliente <span class="optional">opcional</span><input id="saleCustomer" placeholder="Nome do cliente"></label>
-                <label class="field-label">Observação <span class="optional">opcional</span><input id="saleNote" placeholder="Ex.: retirar amanhã"></label>
-              </div>
-
-              <div class="items-heading">
-                <span>Descrição</span><span>Qtd.</span><span>Valor unit.</span><span></span>
-              </div>
+              <div class="items-labels" aria-hidden="true"><span>Descrição</span><span>Qtd.</span><span>Valor un.</span><span></span></div>
               <div id="saleItems" class="sale-items"></div>
             </article>
-
-            <aside class="panel checkout">
-              <div class="checkout-badge">RESUMO</div>
-              <h3>Finalizar venda</h3>
-              <p class="panel-subtitle">Confira os valores antes de registrar.</p>
-
-              <div class="checkout-values">
-                <div class="summary-row"><span>Subtotal</span><strong id="saleSubtotal">R$ 0,00</strong></div>
-                <label class="field-label discount-field">Desconto (R$)<input id="saleDiscount" type="number" min="0" step="0.01" value="0"></label>
-                <div class="summary-row total"><span>Total</span><strong id="saleTotal">R$ 0,00</strong></div>
-              </div>
-
-              <label class="field-label">Forma de pagamento
-                <select id="salePayment">
-                  <option value="pix">Pix</option>
-                  <option value="dinheiro">Dinheiro</option>
-                  <option value="debito">Débito</option>
-                  <option value="credito">Crédito</option>
-                  <option value="outro">Outro</option>
-                </select>
-              </label>
-
-              <button id="finishSaleBtn" class="btn btn-primary btn-block btn-lg">Finalizar venda</button>
-              <small class="checkout-note"><span></span>A venda será vinculada ao caixa aberto.</small>
-            </aside>
-          </div>
-        </section>
-
-        <section id="section-cash" class="section">
-          <div class="section-intro">
-            <div><span class="eyebrow">CONTROLE DE CAIXA</span><h3>Movimentações</h3><p>Registre entradas ou saídas que não fazem parte de uma venda.</p></div>
           </div>
 
-          <div class="grid-2">
-            <article class="panel">
-              <div class="panel-head"><div><p class="eyebrow">NOVO REGISTRO</p><h3>Nova movimentação</h3></div></div>
-              <form id="movementForm" class="stack-lg movement-form">
-                <label class="field-label">Tipo
-                  <select id="movementType"><option value="entrada">Entrada</option><option value="saida">Saída</option></select>
-                </label>
-                <label class="field-label">Descrição<input id="movementDescription" placeholder="Ex.: troco, motoboy, material" required></label>
-                <label class="field-label">Valor (R$)<input id="movementAmount" type="number" min="0.01" step="0.01" placeholder="0,00" required></label>
-                <button class="btn btn-primary btn-lg" type="submit">Registrar movimentação</button>
-              </form>
-            </article>
-
-            <article class="panel">
-              <div class="panel-head"><div><p class="eyebrow">HOJE</p><h3>Movimentações registradas</h3></div></div>
-              <div id="movementList" class="list-empty empty-state">Nenhuma movimentação registrada.</div>
-            </article>
-          </div>
-        </section>
-
-        <section id="section-history" class="section">
-          <div class="section-intro history-intro">
-            <div><span class="eyebrow">CONSULTA</span><h3>Histórico de vendas</h3><p>Consulte as vendas registradas em uma data específica.</p></div>
-            <label class="date-filter-label">Data<input id="historyDate" type="date" class="date-filter"></label>
-          </div>
-
-          <article class="panel table-panel">
-            <div class="table-wrap">
-              <table>
-                <thead><tr><th>Horário</th><th>Cliente</th><th>Pagamento</th><th>Itens</th><th>Total</th></tr></thead>
-                <tbody id="historyBody"></tbody>
-              </table>
+          <aside class="checkout-card">
+            <div>
+              <p class="eyebrow">RESUMO DA VENDA</p>
+              <h3>Recebimento</h3>
             </div>
+            <div class="checkout-lines">
+              <div class="summary-row"><span>Subtotal</span><strong id="saleSubtotal">R$ 0,00</strong></div>
+              <label class="discount-field">Desconto
+                <div class="money-input"><span>R$</span><input id="saleDiscount" type="number" min="0" step="0.01" value="0"></div>
+              </label>
+              <div class="summary-row total"><span>Total</span><strong id="saleTotal">R$ 0,00</strong></div>
+            </div>
+            <label>Forma de pagamento
+              <select id="salePayment">
+                <option value="pix">Pix</option>
+                <option value="dinheiro">Dinheiro</option>
+                <option value="debito">Débito</option>
+                <option value="credito">Crédito</option>
+                <option value="outro">Outro</option>
+              </select>
+            </label>
+            <button id="finishSaleBtn" class="btn btn-primary btn-block btn-lg">Finalizar venda</button>
+            <p class="checkout-hint">Ao finalizar, você poderá gerar o recibo em PDF e compartilhar com o cliente.</p>
+          </aside>
+        </div>
+      </section>
+
+      <section id="section-cash" class="section">
+        <div class="two-column-layout">
+          <article class="panel movement-form-panel">
+            <div class="panel-head"><div><p class="eyebrow">CAIXA</p><h3>Nova movimentação</h3></div></div>
+            <form id="movementForm" class="form-stack compact">
+              <label>Tipo
+                <div class="segmented">
+                  <input type="radio" name="movement-kind" id="kindIncome" value="entrada" checked>
+                  <label for="kindIncome">Entrada</label>
+                  <input type="radio" name="movement-kind" id="kindExpense" value="saida">
+                  <label for="kindExpense">Saída</label>
+                </div>
+                <select id="movementType" class="visually-hidden-select" aria-hidden="true" tabindex="-1"><option value="entrada">Entrada</option><option value="saida">Saída</option></select>
+              </label>
+              <label>Descrição<input id="movementDescription" placeholder="Ex.: troco, motoboy, material" required></label>
+              <label>Valor
+                <div class="money-input"><span>R$</span><input id="movementAmount" type="number" min="0.01" step="0.01" placeholder="0,00" required></div>
+              </label>
+              <button class="btn btn-primary" type="submit">Registrar movimentação</button>
+            </form>
           </article>
-        </section>
 
-        <section id="section-close" class="section">
-          <div class="section-intro">
-            <div><span class="eyebrow">ENCERRAMENTO DO DIA</span><h3>Fechamento de caixa</h3><p>Confira os valores antes de encerrar o caixa atual.</p></div>
+          <article class="panel">
+            <div class="panel-head"><div><p class="eyebrow">HOJE</p><h3>Movimentações</h3></div></div>
+            <div id="movementList" class="empty-state">Nenhuma movimentação registrada.</div>
+          </article>
+        </div>
+      </section>
+
+      <section id="section-history" class="section">
+        <article class="panel history-panel">
+          <div class="history-toolbar">
+            <div><p class="eyebrow">VENDAS</p><h3>Histórico</h3></div>
+            <label class="date-control">Data<input id="historyDate" type="date"></label>
           </div>
-
-          <div class="grid-2 close-grid">
-            <article class="panel">
-              <div class="panel-head"><div><p class="eyebrow">CONFERÊNCIA</p><h3>Resumo do caixa</h3></div></div>
-              <div id="closeSummary" class="close-summary"></div>
-            </article>
-
-            <article class="panel close-panel">
-              <div class="close-panel-icon"><svg viewBox="0 0 24 24"><path d="M6 4h12v16H6V4Zm3 4h6M9 12h6M9 16h4"/></svg></div>
-              <p class="eyebrow">ENCERRAMENTO</p>
-              <h3>Fechar caixa</h3>
-              <p class="panel-subtitle">Informe o valor contado fisicamente em dinheiro. O sistema registrará qualquer diferença.</p>
-              <label class="field-label">Dinheiro contado (R$)<input id="countedCash" type="number" min="0" step="0.01" value="0"></label>
-              <label class="field-label">Observação <span class="optional">opcional</span><input id="closeNote" placeholder="Ex.: diferença conferida"></label>
-              <button id="closeCashBtn" class="btn btn-danger btn-block btn-lg">Fechar caixa</button>
-            </article>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Horário</th><th>Cliente</th><th>Responsável</th><th>Pagamento</th><th>Total</th><th class="actions-col">Ações</th></tr></thead>
+              <tbody id="historyBody"></tbody>
+            </table>
           </div>
-        </section>
-      </div>
+        </article>
+      </section>
     </main>
   </div>
 
-  <dialog id="openCashDialog">
-    <form method="dialog" class="dialog-card" id="openCashForm">
-      <div class="dialog-icon"><svg viewBox="0 0 24 24"><path d="M4 7h16v10H4V7Zm12 3h4v4h-4a2 2 0 0 1 0-4Z"/></svg></div>
-      <div><p class="eyebrow">INÍCIO DO DIA</p><h3>Abrir caixa</h3><p class="panel-subtitle">Informe o valor disponível em dinheiro para troco.</p></div>
-      <label class="field-label">Valor inicial em dinheiro (R$)<input id="openingAmount" type="number" min="0" step="0.01" value="0" required></label>
-      <div class="dialog-actions">
-        <button value="cancel" class="btn btn-ghost">Cancelar</button>
-        <button id="confirmOpenCash" value="default" class="btn btn-primary">Abrir caixa</button>
+  <dialog id="saleDoneDialog" class="sale-done-dialog">
+    <div class="done-card">
+      <button id="closeDoneBtn" class="modal-close" aria-label="Fechar">×</button>
+      <div class="done-icon">
+        <svg viewBox="0 0 24 24"><path d="m7 12 3 3 7-7"/></svg>
       </div>
-    </form>
+      <p class="eyebrow">VENDA REGISTRADA</p>
+      <h3 id="doneSaleTitle">Tudo certo.</h3>
+      <p class="muted">O recibo está pronto para ser entregue ao cliente.</p>
+      <div class="done-total"><span>Total recebido</span><strong id="doneSaleTotal">R$ 0,00</strong></div>
+      <div class="receipt-actions">
+        <button id="downloadReceiptBtn" class="btn btn-outline btn-block">
+          <svg viewBox="0 0 24 24"><path d="M12 3v12M8 11l4 4 4-4M5 20h14"/></svg>
+          Baixar recibo PDF
+        </button>
+        <button id="shareReceiptBtn" class="btn btn-primary btn-block">
+          <svg viewBox="0 0 24 24"><path d="M8 12h8M13 7l5 5-5 5M4 5v14"/></svg>
+          Compartilhar recibo
+        </button>
+        <button id="whatsappReceiptBtn" class="btn btn-whatsapp btn-block">
+          <svg viewBox="0 0 24 24"><path d="M20 11.5a8 8 0 0 1-11.8 7L4 20l1.5-4.1A8 8 0 1 1 20 11.5Z"/></svg>
+          Abrir WhatsApp do cliente
+        </button>
+      </div>
+    </div>
   </dialog>
 
   <script type="module" src="./app.js"></script>
