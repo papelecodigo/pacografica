@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#111827" />
+  <title>Caixa | Papel e Código</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div id="toast" class="toast" aria-live="polite"></div>
+
+  <section id="loginView" class="login-view">
+    <div class="login-card">
+      <div class="brand-mark">P<span>&</span>C</div>
+      <p class="eyebrow">PAPEL E CÓDIGO</p>
+      <h1>Caixa</h1>
+      <p class="muted">Acesse para registrar e acompanhar o movimento da gráfica.</p>
+      <form id="loginForm" class="stack-lg">
+        <label>E-mail
+          <input id="email" type="email" autocomplete="email" placeholder="seu@email.com" required>
+        </label>
+        <label>Senha
+          <input id="password" type="password" autocomplete="current-password" placeholder="••••••••" required>
+        </label>
+        <button class="btn btn-primary btn-block" type="submit">Entrar</button>
+      </form>
+      <p id="configWarning" class="warning hidden">Configure o Supabase em <strong>config.js</strong> antes de usar o login.</p>
+    </div>
+  </section>
+
+  <div id="appView" class="app hidden">
+    <aside class="sidebar">
+      <div>
+        <div class="sidebar-brand">
+          <div class="brand-mark small">P<span>&</span>C</div>
+          <div><strong>Papel e Código</strong><small>Caixa da gráfica</small></div>
+        </div>
+        <nav class="nav">
+          <button class="nav-item active" data-section="dashboard">Visão geral</button>
+          <button class="nav-item" data-section="sale">Nova venda</button>
+          <button class="nav-item" data-section="cash">Movimentações</button>
+          <button class="nav-item" data-section="history">Histórico</button>
+          <button class="nav-item" data-section="close">Fechamento</button>
+        </nav>
+      </div>
+      <button id="logoutBtn" class="btn btn-ghost">Sair</button>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow" id="todayLabel"></p>
+          <h2 id="pageTitle">Visão geral</h2>
+        </div>
+        <div class="topbar-actions">
+          <span id="cashStatus" class="status-chip">Caixa fechado</span>
+          <button id="openCashBtn" class="btn btn-secondary">Abrir caixa</button>
+        </div>
+      </header>
+
+      <section id="section-dashboard" class="section active">
+        <div class="cards four">
+          <article class="metric"><span>Vendas hoje</span><strong id="metricSales">R$ 0,00</strong><small id="metricSalesCount">0 vendas</small></article>
+          <article class="metric"><span>Entradas</span><strong id="metricIncome">R$ 0,00</strong><small>movimentações</small></article>
+          <article class="metric"><span>Saídas</span><strong id="metricExpense">R$ 0,00</strong><small>movimentações</small></article>
+          <article class="metric accent"><span>Saldo do caixa</span><strong id="metricBalance">R$ 0,00</strong><small>saldo esperado</small></article>
+        </div>
+
+        <div class="grid-2">
+          <article class="panel">
+            <div class="panel-head"><div><p class="eyebrow">HOJE</p><h3>Recebimentos por forma</h3></div></div>
+            <div id="paymentSummary" class="payment-list"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head"><div><p class="eyebrow">MOVIMENTO</p><h3>Últimas vendas</h3></div><button class="link-btn" data-go="history">Ver histórico</button></div>
+            <div id="recentSales" class="list-empty">Nenhuma venda registrada hoje.</div>
+          </article>
+        </div>
+      </section>
+
+      <section id="section-sale" class="section">
+        <div class="grid-sale">
+          <article class="panel">
+            <div class="panel-head"><div><p class="eyebrow">ATENDIMENTO</p><h3>Itens da venda</h3></div><button id="addItemBtn" class="btn btn-secondary">+ Adicionar item</button></div>
+            <div class="form-grid two">
+              <label>Cliente (opcional)<input id="saleCustomer" placeholder="Nome do cliente"></label>
+              <label>Observação (opcional)<input id="saleNote" placeholder="Ex.: retirar amanhã"></label>
+            </div>
+            <div id="saleItems" class="sale-items"></div>
+          </article>
+          <aside class="panel checkout">
+            <p class="eyebrow">RESUMO</p>
+            <h3>Finalizar venda</h3>
+            <div class="summary-row"><span>Subtotal</span><strong id="saleSubtotal">R$ 0,00</strong></div>
+            <label>Desconto (R$)<input id="saleDiscount" type="number" min="0" step="0.01" value="0"></label>
+            <div class="summary-row total"><span>Total</span><strong id="saleTotal">R$ 0,00</strong></div>
+            <label>Forma de pagamento<select id="salePayment"><option value="pix">Pix</option><option value="dinheiro">Dinheiro</option><option value="debito">Débito</option><option value="credito">Crédito</option><option value="outro">Outro</option></select></label>
+            <button id="finishSaleBtn" class="btn btn-primary btn-block">Finalizar venda</button>
+            <small class="muted">A venda será registrada no caixa aberto.</small>
+          </aside>
+        </div>
+      </section>
+
+      <section id="section-cash" class="section">
+        <div class="grid-2">
+          <article class="panel">
+            <p class="eyebrow">CAIXA</p><h3>Nova movimentação</h3>
+            <form id="movementForm" class="stack-lg">
+              <label>Tipo<select id="movementType"><option value="entrada">Entrada</option><option value="saida">Saída</option></select></label>
+              <label>Descrição<input id="movementDescription" placeholder="Ex.: troco, motoboy, material" required></label>
+              <label>Valor (R$)<input id="movementAmount" type="number" min="0.01" step="0.01" required></label>
+              <button class="btn btn-primary" type="submit">Registrar movimentação</button>
+            </form>
+          </article>
+          <article class="panel">
+            <div class="panel-head"><div><p class="eyebrow">HOJE</p><h3>Movimentações</h3></div></div>
+            <div id="movementList" class="list-empty">Nenhuma movimentação registrada.</div>
+          </article>
+        </div>
+      </section>
+
+      <section id="section-history" class="section">
+        <article class="panel">
+          <div class="panel-head"><div><p class="eyebrow">VENDAS</p><h3>Histórico</h3></div><input id="historyDate" type="date" class="date-filter"></div>
+          <div class="table-wrap"><table><thead><tr><th>Horário</th><th>Cliente</th><th>Pagamento</th><th>Itens</th><th>Total</th></tr></thead><tbody id="historyBody"></tbody></table></div>
+        </article>
+      </section>
+
+      <section id="section-close" class="section">
+        <div class="grid-2">
+          <article class="panel">
+            <p class="eyebrow">CONFERÊNCIA</p><h3>Resumo do caixa</h3>
+            <div id="closeSummary" class="close-summary"></div>
+          </article>
+          <article class="panel">
+            <p class="eyebrow">ENCERRAMENTO</p><h3>Fechar caixa</h3>
+            <p class="muted">Informe o valor contado fisicamente em dinheiro. O sistema registrará a diferença.</p>
+            <label>Dinheiro contado (R$)<input id="countedCash" type="number" min="0" step="0.01" value="0"></label>
+            <label>Observação<input id="closeNote" placeholder="Opcional"></label>
+            <button id="closeCashBtn" class="btn btn-danger btn-block">Fechar caixa</button>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="openCashDialog">
+    <form method="dialog" class="dialog-card" id="openCashForm">
+      <p class="eyebrow">INÍCIO DO DIA</p><h3>Abrir caixa</h3>
+      <label>Valor inicial em dinheiro (R$)<input id="openingAmount" type="number" min="0" step="0.01" value="0" required></label>
+      <div class="dialog-actions"><button value="cancel" class="btn btn-ghost">Cancelar</button><button id="confirmOpenCash" value="default" class="btn btn-primary">Abrir caixa</button></div>
+    </form>
+  </dialog>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
