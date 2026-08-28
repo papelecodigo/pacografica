@@ -192,4 +192,4 @@ observer.observe(document.documentElement, { childList:true, subtree:true });
 ensureDialog();
 ensureOptions();
 ensureSaleDateField();
-import('./sale-date-receipt.js?v=3').catch(err=>console.error('Falha ao carregar módulo de data/recibo',err));
+import('./sale-experience.js?build=20260828-2018').catch(err=>console.error('Falha ao carregar experiência de venda',err));
