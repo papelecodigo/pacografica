@@ -1,3 +1,6 @@
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config.js';
+
 if(!document.querySelector('link[data-mobile-css]')){
   const mobileCss=document.createElement('link');
   mobileCss.rel='stylesheet';
@@ -6,13 +9,38 @@ if(!document.querySelector('link[data-mobile-css]')){
   document.head.appendChild(mobileCss);
 }
 
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config.js';
-
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const CREATE_VALUE = '__quick_create_service__';
 const quickServices = new Map();
 let targetSelect = null;
+
+function todaySaoPaulo(){
+  return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Sao_Paulo'}).format(new Date());
+}
+
+function ensureSaleDateField(){
+  if(document.getElementById('saleDate')) return;
+  const grid=document.querySelector('#section-sale .form-grid.three');
+  if(!grid) return;
+  grid.classList.add('sale-grid-with-date');
+  const label=document.createElement('label');
+  label.className='sale-date-field';
+  label.innerHTML='Data da venda<input id="saleDate" type="date">';
+  grid.appendChild(label);
+  document.getElementById('saleDate').value=todaySaoPaulo();
+
+  if(!document.getElementById('saleDateQuickStyle')){
+    const style=document.createElement('style');
+    style.id='saleDateQuickStyle';
+    style.textContent=`
+      #section-sale .sale-grid-with-date{grid-template-columns:160px minmax(180px,1fr) minmax(210px,1fr) 165px}
+      #section-sale .sale-date-field input{font-weight:700;background:#fff}
+      @media(max-width:1100px){#section-sale .sale-grid-with-date{grid-template-columns:1fr 1fr}}
+      @media(max-width:650px){#section-sale .sale-grid-with-date{grid-template-columns:1fr}.sale-date-field{order:-1}}
+    `;
+    document.head.appendChild(style);
+  }
+}
 
 function ensureDialog(){
   if(document.getElementById('quickServiceDialog')) return;
@@ -155,9 +183,13 @@ document.addEventListener('change', (event)=>{
   }
 }, true);
 
-const observer = new MutationObserver(()=>ensureOptions());
+const observer = new MutationObserver(()=>{
+  ensureOptions();
+  ensureSaleDateField();
+});
 observer.observe(document.documentElement, { childList:true, subtree:true });
 
 ensureDialog();
 ensureOptions();
-import('./sale-date-receipt.js');
+ensureSaleDateField();
+import('./sale-date-receipt.js?v=3').catch(err=>console.error('Falha ao carregar módulo de data/recibo',err));
