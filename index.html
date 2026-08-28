@@ -3,52 +3,36 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#0b1220" />
-  <meta name="color-scheme" content="light" />
-  <title>Caixa | Papel e Código</title>
+  <meta name="theme-color" content="#0a1324" />
+  <title>Papel e Código | Gestão</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-  <div id="toast" class="toast" aria-live="polite"></div>
+  <div id="toast" class="toast"></div>
 
   <section id="loginView" class="login-view">
     <div class="login-shell">
       <aside class="login-brand">
-        <div class="brand-signature brand-signature-light">
-          <img src="./assets/brand-mark.png" alt="Símbolo Papel e Código" class="brand-image">
-          <div><strong>papel</strong><span>e código</span></div>
-        </div>
-        <div class="login-brand-copy">
-          <span class="brand-kicker">CAIXA DA GRÁFICA</span>
-          <h1>Venda, receba<br>e siga o fluxo.</h1>
-          <p>Um caixa simples para a rotina da Papel e Código.</p>
+        <img src="./assets/brand-mark.png" class="login-logo" alt="Papel e Código">
+        <div>
+          <span>GESTÃO DA GRÁFICA</span>
+          <h1>Controle financeiro e comercial, sem ruído.</h1>
+          <p>Vendas, custos, serviços, clientes, investimentos e projeções em um único painel.</p>
         </div>
         <small>Onde sua marca acontece.</small>
       </aside>
-
       <main class="login-panel">
-        <div class="login-card">
-          <div class="mobile-login-brand">
-            <img src="./assets/brand-mark.png" alt="Papel e Código">
-            <strong>Papel e Código</strong>
-          </div>
+        <form id="loginForm" class="login-card">
           <p class="eyebrow">ACESSO</p>
-          <h2>Entrar no caixa</h2>
-          <p class="muted login-subtitle">Use o acesso cadastrado no sistema.</p>
-          <form id="loginForm" class="form-stack">
-            <label>E-mail
-              <input id="email" type="email" autocomplete="email" placeholder="seu@email.com" required>
-            </label>
-            <label>Senha
-              <input id="password" type="password" autocomplete="current-password" placeholder="••••••••" required>
-            </label>
-            <button class="btn btn-primary btn-block btn-lg" type="submit">Entrar</button>
-          </form>
-          <p id="configWarning" class="warning hidden">Configure a conexão do Supabase em <strong>config.js</strong>.</p>
-        </div>
+          <h2>Entrar no sistema</h2>
+          <label>E-mail<input id="email" type="email" autocomplete="email" required></label>
+          <label>Senha<input id="password" type="password" autocomplete="current-password" required></label>
+          <button class="btn btn-primary btn-lg" type="submit">Entrar</button>
+          <p id="configWarning" class="warning hidden">Configure o Supabase em config.js.</p>
+        </form>
       </main>
     </div>
   </section>
@@ -56,244 +40,118 @@
   <div id="appView" class="app hidden">
     <aside class="sidebar">
       <div>
-        <div class="sidebar-brand">
-          <img src="./assets/brand-mark.png" alt="Papel e Código" class="sidebar-logo">
-          <div class="sidebar-brand-name"><strong>papel</strong><span>e código</span></div>
-        </div>
-
-        <div class="sidebar-caption">CAIXA</div>
-        <nav class="nav" aria-label="Navegação principal">
-          <button class="nav-item active" data-section="dashboard">
-            <svg viewBox="0 0 24 24"><path d="M4 13h6V4H4v9Zm0 7h6v-4H4v4Zm10 0h6v-9h-6v9Zm0-16v4h6V4h-6Z"/></svg>
-            <span>Visão geral</span>
-          </button>
-          <button class="nav-item" data-section="sale">
-            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-            <span>Nova venda</span>
-          </button>
-          <button class="nav-item" data-section="cash">
-            <svg viewBox="0 0 24 24"><path d="M4 7h16v10H4zM8 12h.01M16 12h.01M12 9.5v5"/></svg>
-            <span>Movimentações</span>
-          </button>
-          <button class="nav-item" data-section="history">
-            <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
-            <span>Histórico</span>
-          </button>
+        <div class="sidebar-brand"><img src="./assets/brand-mark.png" alt="Papel e Código"><div><strong>papel</strong><span>e código</span></div></div>
+        <div class="nav-label">GESTÃO</div>
+        <nav class="nav">
+          <button class="nav-item active" data-section="dashboard">Visão geral</button>
+          <button class="nav-item" data-section="sale">Nova venda</button>
+          <button class="nav-item" data-section="services">Serviços</button>
+          <button class="nav-item" data-section="funnel">Funil</button>
+          <button class="nav-item" data-section="finance">Financeiro</button>
+          <button class="nav-item" data-section="investments">Investimentos</button>
+          <button class="nav-item" data-section="history">Histórico</button>
+          <button class="nav-item" data-section="settings">Configurações</button>
         </nav>
       </div>
-
-      <div class="sidebar-footer">
-        <div class="system-state"><i></i><span>Sistema online</span></div>
-        <button id="logoutBtn" class="logout-btn">
-          <svg viewBox="0 0 24 24"><path d="M10 5H5v14h5M14 8l4 4-4 4M18 12H9"/></svg>
-          <span>Sair</span>
-        </button>
-      </div>
+      <div class="sidebar-foot"><span class="online-dot"></span>Sistema online<button id="logoutBtn">Sair</button></div>
     </aside>
 
     <main class="main">
       <header class="topbar">
-        <div class="topbar-copy">
-          <p class="eyebrow" id="todayLabel"></p>
-          <h2 id="pageTitle">Visão geral</h2>
-        </div>
-        <button id="newSaleTopBtn" class="btn btn-primary top-action">
-          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-          Nova venda
-        </button>
+        <div><p id="todayLabel" class="eyebrow"></p><h2 id="pageTitle">Visão geral</h2></div>
+        <button id="newSaleTopBtn" class="btn btn-primary">+ Nova venda</button>
       </header>
 
       <section id="section-dashboard" class="section active">
-        <div class="dashboard-strip">
-          <article class="metric metric-main">
-            <span class="metric-label">Vendas hoje</span>
-            <strong id="metricSales">R$ 0,00</strong>
-            <small id="metricSalesCount">0 vendas</small>
-          </article>
-          <article class="metric">
-            <span class="metric-label">Entradas</span>
-            <strong id="metricIncome">R$ 0,00</strong>
-            <small>movimentações</small>
-          </article>
-          <article class="metric">
-            <span class="metric-label">Saídas</span>
-            <strong id="metricExpense">R$ 0,00</strong>
-            <small>movimentações</small>
-          </article>
-          <article class="metric metric-balance">
-            <span class="metric-label">Movimento líquido</span>
-            <strong id="metricBalance">R$ 0,00</strong>
-            <small>vendas + entradas − saídas</small>
-          </article>
+        <div class="kpi-grid six">
+          <article class="kpi primary"><span>Faturamento no mês</span><strong id="kpiRevenue">R$ 0,00</strong><small id="kpiRevenueCount">0 vendas</small></article>
+          <article class="kpi"><span>Lucro bruto</span><strong id="kpiGrossProfit">R$ 0,00</strong><small id="kpiGrossMargin">0% margem</small></article>
+          <article class="kpi"><span>Resultado operacional</span><strong id="kpiOperatingProfit">R$ 0,00</strong><small>após despesas e impostos</small></article>
+          <article class="kpi"><span>Fluxo de caixa</span><strong id="kpiCashFlow">R$ 0,00</strong><small>inclui investimentos</small></article>
+          <article class="kpi"><span>Ticket médio</span><strong id="kpiTicket">R$ 0,00</strong><small>por venda</small></article>
+          <article class="kpi target"><span>Meta mensal</span><strong id="kpiTarget">R$ 0,00</strong><small id="kpiTargetPct">0% atingido</small></article>
+        </div>
+
+        <div class="projection-band">
+          <div><span>PROJEÇÃO DE FECHAMENTO</span><strong id="projectionProbable">R$ 0,00</strong><small id="projectionInfo">Aguardando dados</small></div>
+          <div class="scenario"><span>Conservador</span><b id="projectionLow">R$ 0,00</b></div>
+          <div class="scenario"><span>Provável</span><b id="projectionMid">R$ 0,00</b></div>
+          <div class="scenario"><span>Otimista</span><b id="projectionHigh">R$ 0,00</b></div>
+          <div class="scenario"><span>Ponto de equilíbrio</span><b id="breakEven">—</b></div>
         </div>
 
         <div class="dashboard-grid">
-          <article class="panel panel-payments">
-            <div class="panel-head">
-              <div><p class="eyebrow">RECEBIMENTOS</p><h3>Por forma de pagamento</h3></div>
-            </div>
-            <div id="paymentSummary" class="payment-list"></div>
-          </article>
-
-          <article class="panel panel-recent">
-            <div class="panel-head">
-              <div><p class="eyebrow">HOJE</p><h3>Últimas vendas</h3></div>
-              <button class="text-action" data-go="history">Ver todas</button>
-            </div>
-            <div id="recentSales" class="empty-state">Nenhuma venda registrada hoje.</div>
-          </article>
+          <article class="panel chart-panel"><div class="panel-head"><div><p class="eyebrow">MÊS</p><h3>Faturamento acumulado</h3></div></div><div class="chart-box"><canvas id="revenueChart"></canvas></div></article>
+          <article class="panel chart-panel"><div class="panel-head"><div><p class="eyebrow">RESULTADO</p><h3>Receita, custo e lucro</h3></div></div><div class="chart-box"><canvas id="profitChart"></canvas></div></article>
+          <article class="panel"><div class="panel-head"><div><p class="eyebrow">COMERCIAL</p><h3>Funil atual</h3></div><button class="text-action" data-go="funnel">Abrir funil</button></div><div id="funnelMini" class="funnel-mini"></div></article>
+          <article class="panel"><div class="panel-head"><div><p class="eyebrow">SERVIÇOS</p><h3>Mais rentáveis</h3></div><button class="text-action" data-go="services">Ver serviços</button></div><div id="serviceRanking" class="ranking"></div></article>
         </div>
       </section>
 
       <section id="section-sale" class="section">
         <div class="sale-layout">
           <div class="sale-editor">
-            <article class="panel customer-panel">
-              <div class="panel-title-line">
-                <span class="step-number">01</span>
-                <div><h3>Atendimento</h3><p>Quem vendeu e para quem estamos vendendo.</p></div>
+            <article class="panel">
+              <div class="section-title"><span>01</span><div><h3>Atendimento</h3><p>Responsável e dados do cliente.</p></div></div>
+              <div class="form-grid three">
+                <label>Responsável<select id="saleSeller"><option value="">Selecione</option><option>IGOR</option><option>JHONATAN</option><option>BEATRIZ</option></select></label>
+                <label>Cliente<input id="saleCustomer" placeholder="Nome do cliente"></label>
+                <label>WhatsApp<div class="input-action"><input id="salePhone" inputmode="tel" placeholder="(31) 99999-9999"><button id="saleWhatsappBtn" type="button">WA</button></div></label>
               </div>
-
-              <div class="customer-grid">
-                <label>Responsável pela venda
-                  <select id="saleSeller" required>
-                    <option value="">Selecione</option>
-                    <option value="IGOR">IGOR</option>
-                    <option value="JHONATAN">JHONATAN</option>
-                    <option value="BEATRIZ">BEATRIZ</option>
-                  </select>
-                </label>
-                <label>Cliente
-                  <input id="saleCustomer" placeholder="Nome do cliente">
-                </label>
-                <label>Contato / WhatsApp
-                  <div class="input-action-group">
-                    <input id="salePhone" inputmode="tel" placeholder="(31) 99999-9999">
-                    <button id="saleWhatsappBtn" class="field-action whatsapp" type="button" title="Abrir WhatsApp" aria-label="Abrir WhatsApp do cliente">
-                      <svg viewBox="0 0 24 24"><path d="M20 11.5a8 8 0 0 1-11.8 7L4 20l1.5-4.1A8 8 0 1 1 20 11.5Z"/><path d="M9 8.5c.5 2.1 2 3.6 4.3 4.5"/></svg>
-                    </button>
-                  </div>
-                </label>
-              </div>
-
-              <label class="note-field">Observação
-                <input id="saleNote" placeholder="Ex.: retirar amanhã, acabamento fosco...">
-              </label>
+              <label>Observação<input id="saleNote" placeholder="Prazo, acabamento, retirada..."></label>
             </article>
-
-            <article class="panel items-panel">
-              <div class="panel-title-line items-title">
-                <span class="step-number">02</span>
-                <div><h3>Itens da venda</h3><p>Adicione os produtos ou serviços.</p></div>
-                <button id="addItemBtn" class="btn btn-outline" type="button">
-                  <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-                  Adicionar item
-                </button>
-              </div>
-              <div class="items-labels" aria-hidden="true"><span>Descrição</span><span>Qtd.</span><span>Valor un.</span><span></span></div>
+            <article class="panel">
+              <div class="section-title items-head"><span>02</span><div><h3>Itens da venda</h3><p>Escolha um serviço cadastrado ou use item personalizado.</p></div><button id="addItemBtn" class="btn btn-outline" type="button">+ Item</button></div>
               <div id="saleItems" class="sale-items"></div>
             </article>
           </div>
-
           <aside class="checkout-card">
-            <div>
-              <p class="eyebrow">RESUMO DA VENDA</p>
-              <h3>Recebimento</h3>
-            </div>
-            <div class="checkout-lines">
-              <div class="summary-row"><span>Subtotal</span><strong id="saleSubtotal">R$ 0,00</strong></div>
-              <label class="discount-field">Desconto
-                <div class="money-input"><span>R$</span><input id="saleDiscount" type="number" min="0" step="0.01" value="0"></div>
-              </label>
-              <div class="summary-row total"><span>Total</span><strong id="saleTotal">R$ 0,00</strong></div>
-            </div>
-            <label>Forma de pagamento
-              <select id="salePayment">
-                <option value="pix">Pix</option>
-                <option value="dinheiro">Dinheiro</option>
-                <option value="debito">Débito</option>
-                <option value="credito">Crédito</option>
-                <option value="outro">Outro</option>
-              </select>
-            </label>
-            <button id="finishSaleBtn" class="btn btn-primary btn-block btn-lg">Finalizar venda</button>
-            <p class="checkout-hint">Ao finalizar, você poderá gerar o recibo em PDF e compartilhar com o cliente.</p>
+            <p class="eyebrow">RESUMO</p><h3>Recebimento</h3>
+            <div class="summary-row"><span>Subtotal</span><strong id="saleSubtotal">R$ 0,00</strong></div>
+            <label>Desconto<input id="saleDiscount" type="number" min="0" step="0.01" value="0"></label>
+            <div class="summary-row total"><span>Total</span><strong id="saleTotal">R$ 0,00</strong></div>
+            <label>Pagamento<select id="salePayment"><option value="pix">Pix</option><option value="dinheiro">Dinheiro</option><option value="debito">Débito</option><option value="credito">Crédito</option><option value="outro">Outro</option></select></label>
+            <button id="finishSaleBtn" class="btn btn-primary btn-lg">Finalizar venda</button>
           </aside>
         </div>
       </section>
 
-      <section id="section-cash" class="section">
-        <div class="two-column-layout">
-          <article class="panel movement-form-panel">
-            <div class="panel-head"><div><p class="eyebrow">CAIXA</p><h3>Nova movimentação</h3></div></div>
-            <form id="movementForm" class="form-stack compact">
-              <label>Tipo
-                <div class="segmented">
-                  <input type="radio" name="movement-kind" id="kindIncome" value="entrada" checked>
-                  <label for="kindIncome">Entrada</label>
-                  <input type="radio" name="movement-kind" id="kindExpense" value="saida">
-                  <label for="kindExpense">Saída</label>
-                </div>
-                <select id="movementType" class="visually-hidden-select" aria-hidden="true" tabindex="-1"><option value="entrada">Entrada</option><option value="saida">Saída</option></select>
-              </label>
-              <label>Descrição<input id="movementDescription" placeholder="Ex.: troco, motoboy, material" required></label>
-              <label>Valor
-                <div class="money-input"><span>R$</span><input id="movementAmount" type="number" min="0.01" step="0.01" placeholder="0,00" required></div>
-              </label>
-              <button class="btn btn-primary" type="submit">Registrar movimentação</button>
-            </form>
-          </article>
-
-          <article class="panel">
-            <div class="panel-head"><div><p class="eyebrow">HOJE</p><h3>Movimentações</h3></div></div>
-            <div id="movementList" class="empty-state">Nenhuma movimentação registrada.</div>
-          </article>
+      <section id="section-services" class="section">
+        <div class="split-layout">
+          <article class="panel"><div class="panel-head"><div><p class="eyebrow">CATÁLOGO</p><h3>Serviços cadastrados</h3></div></div><div id="servicesTable" class="data-list"></div></article>
+          <article class="panel form-panel"><p class="eyebrow">NOVO SERVIÇO</p><h3 id="serviceFormTitle">Cadastrar serviço</h3><form id="serviceForm" class="form-stack"><input id="serviceId" type="hidden"><label>Nome<input id="serviceName" required></label><label>Categoria<input id="serviceCategory" placeholder="Cartões, adesivos, embalagens..."></label><div class="form-grid two"><label>Preço de venda<input id="servicePrice" type="number" min="0" step="0.01" required></label><label>Custo direto<input id="serviceCost" type="number" min="0" step="0.01" required></label></div><button class="btn btn-primary" type="submit">Salvar serviço</button><button id="cancelServiceEdit" class="btn btn-ghost hidden" type="button">Cancelar edição</button></form></article>
         </div>
       </section>
 
+      <section id="section-funnel" class="section">
+        <div class="funnel-toolbar"><button id="newLeadBtn" class="btn btn-primary">+ Novo atendimento</button><div><strong id="pipelineValue">R$ 0,00</strong><span>em oportunidades abertas</span></div><div><strong id="conversionRate">0%</strong><span>conversão para aprovado</span></div></div>
+        <div id="kanban" class="kanban"></div>
+      </section>
+
+      <section id="section-finance" class="section">
+        <div class="finance-layout">
+          <article class="panel"><div class="panel-head"><div><p class="eyebrow">LANÇAMENTOS</p><h3>Entradas e saídas do mês</h3></div></div><div id="movementList" class="data-list"></div></article>
+          <article class="panel form-panel"><p class="eyebrow">NOVO LANÇAMENTO</p><h3>Movimentação financeira</h3><form id="movementForm" class="form-stack"><label>Tipo<select id="movementType"><option value="entrada">Entrada</option><option value="saida">Saída</option></select></label><label>Natureza<select id="movementNature"><option value="operational">Operacional</option><option value="investment">Investimento / máquina</option><option value="other">Outro</option></select></label><label>Categoria<input id="movementCategory" placeholder="Energia, papel, parcela impressora..."></label><label>Descrição<input id="movementDescription" required></label><label>Valor<input id="movementAmount" type="number" min="0.01" step="0.01" required></label><button class="btn btn-primary" type="submit">Registrar</button></form></article>
+        </div>
+      </section>
+
+      <section id="section-investments" class="section">
+        <div class="split-layout"><article class="panel"><div class="panel-head"><div><p class="eyebrow">PATRIMÔNIO</p><h3>Máquinas e investimentos</h3></div></div><div id="investmentsList" class="investment-list"></div></article><article class="panel form-panel"><p class="eyebrow">NOVO INVESTIMENTO</p><h3>Cadastrar máquina</h3><form id="investmentForm" class="form-stack"><input id="investmentId" type="hidden"><label>Nome<input id="investmentName" placeholder="Epson L8180" required></label><div class="form-grid two"><label>Valor total<input id="investmentTotal" type="number" min="0" step="0.01"></label><label>Valor da parcela<input id="investmentInstallment" type="number" min="0" step="0.01"></label></div><div class="form-grid two"><label>Total de parcelas<input id="investmentTotalInstallments" type="number" min="1" value="1"></label><label>Parcelas pagas<input id="investmentPaidInstallments" type="number" min="0" value="0"></label></div><label>Data da compra<input id="investmentDate" type="date"></label><label>Observação<input id="investmentNote"></label><button class="btn btn-primary" type="submit">Salvar investimento</button></form></article></div>
+      </section>
+
       <section id="section-history" class="section">
-        <article class="panel history-panel">
-          <div class="history-toolbar">
-            <div><p class="eyebrow">VENDAS</p><h3>Histórico</h3></div>
-            <label class="date-control">Data<input id="historyDate" type="date"></label>
-          </div>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Horário</th><th>Cliente</th><th>Responsável</th><th>Pagamento</th><th>Total</th><th class="actions-col">Ações</th></tr></thead>
-              <tbody id="historyBody"></tbody>
-            </table>
-          </div>
-        </article>
+        <article class="panel"><div class="history-toolbar"><div><p class="eyebrow">VENDAS</p><h3>Histórico</h3></div><input id="historyDate" type="date"></div><div class="table-wrap"><table><thead><tr><th>Horário</th><th>Cliente</th><th>Responsável</th><th>Pagamento</th><th>Total</th><th>Ações</th></tr></thead><tbody id="historyBody"></tbody></table></div></article>
+      </section>
+
+      <section id="section-settings" class="section">
+        <article class="panel settings-panel"><div class="panel-head"><div><p class="eyebrow">EMPRESA</p><h3>Dados da Papel e Código</h3><p>Essas informações aparecem no recibo e alimentam as métricas.</p></div></div><form id="settingsForm" class="settings-form"><div class="form-grid two"><label>Nome fantasia<input id="setTradeName"></label><label>Razão social<input id="setLegalName"></label></div><div class="form-grid three"><label>CNPJ<input id="setCnpj"></label><label>Inscrição Estadual<input id="setIE"></label><label>CEP<input id="setZip"></label></div><label>Endereço<input id="setAddress"></label><div class="form-grid two"><label>Cidade<input id="setCity"></label><label>UF<input id="setState" maxlength="2"></label></div><div class="form-grid three"><label>Telefone<input id="setPhone"></label><label>WhatsApp<input id="setWhatsapp"></label><label>E-mail<input id="setEmail" type="email"></label></div><div class="form-grid three"><label>Instagram<input id="setInstagram"></label><label>Site<input id="setWebsite"></label><label>Chave PIX<input id="setPix"></label></div><div class="form-grid two"><label>Meta mensal de faturamento<input id="setTarget" type="number" min="0" step="0.01"></label><label>Imposto estimado (%)<input id="setTax" type="number" min="0" max="100" step="0.01"></label></div><label>Rodapé do recibo<input id="setReceiptFooter"></label><button class="btn btn-primary" type="submit">Salvar configurações</button></form></article>
       </section>
     </main>
   </div>
 
-  <dialog id="saleDoneDialog" class="sale-done-dialog">
-    <div class="done-card">
-      <button id="closeDoneBtn" class="modal-close" aria-label="Fechar">×</button>
-      <div class="done-icon">
-        <svg viewBox="0 0 24 24"><path d="m7 12 3 3 7-7"/></svg>
-      </div>
-      <p class="eyebrow">VENDA REGISTRADA</p>
-      <h3 id="doneSaleTitle">Tudo certo.</h3>
-      <p class="muted">O recibo está pronto para ser entregue ao cliente.</p>
-      <div class="done-total"><span>Total recebido</span><strong id="doneSaleTotal">R$ 0,00</strong></div>
-      <div class="receipt-actions">
-        <button id="downloadReceiptBtn" class="btn btn-outline btn-block">
-          <svg viewBox="0 0 24 24"><path d="M12 3v12M8 11l4 4 4-4M5 20h14"/></svg>
-          Baixar recibo PDF
-        </button>
-        <button id="shareReceiptBtn" class="btn btn-primary btn-block">
-          <svg viewBox="0 0 24 24"><path d="M8 12h8M13 7l5 5-5 5M4 5v14"/></svg>
-          Compartilhar recibo
-        </button>
-        <button id="whatsappReceiptBtn" class="btn btn-whatsapp btn-block">
-          <svg viewBox="0 0 24 24"><path d="M20 11.5a8 8 0 0 1-11.8 7L4 20l1.5-4.1A8 8 0 1 1 20 11.5Z"/></svg>
-          Abrir WhatsApp do cliente
-        </button>
-      </div>
-    </div>
-  </dialog>
+  <dialog id="saleDoneDialog"><div class="modal-card"><button class="modal-x" id="closeDoneBtn">×</button><p class="eyebrow">VENDA REGISTRADA</p><h3 id="doneSaleTitle">Tudo certo.</h3><strong id="doneSaleTotal" class="modal-total">R$ 0,00</strong><div class="modal-actions"><button id="downloadReceiptBtn" class="btn btn-outline">Baixar PDF</button><button id="shareReceiptBtn" class="btn btn-primary">Compartilhar</button><button id="whatsappReceiptBtn" class="btn btn-whatsapp">WhatsApp</button></div></div></dialog>
+
+  <dialog id="leadDialog"><form id="leadForm" class="modal-card"><button type="button" class="modal-x" id="closeLeadBtn">×</button><p class="eyebrow">ATENDIMENTO</p><h3>Novo cliente no funil</h3><input id="leadId" type="hidden"><label>Cliente<input id="leadName" required></label><label>WhatsApp<input id="leadPhone"></label><label>Interesse<input id="leadInterest" placeholder="Ex.: 500 cartões"></label><label>Valor estimado<input id="leadValue" type="number" min="0" step="0.01"></label><label>Responsável<select id="leadSeller"><option value="">—</option><option>IGOR</option><option>JHONATAN</option><option>BEATRIZ</option></select></label><label>Observação<input id="leadNote"></label><button class="btn btn-primary" type="submit">Salvar atendimento</button></form></dialog>
 
   <script type="module" src="./app.js"></script>
 </body>
