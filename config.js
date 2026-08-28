@@ -1,4 +1,4 @@
-// Preencha com os dados públicos do seu projeto Supabase.
-// IMPORTANTE: use somente a ANON/PUBLISHABLE KEY. Nunca coloque service_role aqui.
-export const SUPABASE_URL = "COLE_AQUI_SUA_SUPABASE_URL";
-export const SUPABASE_ANON_KEY = "COLE_AQUI_SUA_SUPABASE_ANON_KEY";
+// Dados públicos do projeto Supabase.
+// IMPORTANTE: use somente a PUBLISHABLE/ANON KEY. Nunca coloque service_role aqui.
+export const SUPABASE_URL = "https://vvdrhzupgwveajmhssll.supabase.co";
+export const SUPABASE_ANON_KEY = "sb_publishable_kek4KjnDTgfBsI8WGVMLZg_9b6CJt0f";
