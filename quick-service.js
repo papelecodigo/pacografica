@@ -160,3 +160,4 @@ observer.observe(document.documentElement, { childList:true, subtree:true });
 
 ensureDialog();
 ensureOptions();
+import('./sale-date-receipt.js');
