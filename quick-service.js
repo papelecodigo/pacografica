@@ -9,4 +9,4 @@ if(!document.querySelector('link[data-mobile-css]')){
 import('./sale-lite.js?build=20260828-2029').catch(err=>console.error('Falha ao carregar complemento de venda',err));
 import('./finance-insights.js?build=20260828-2049').catch(err=>console.error('Falha ao carregar leitura financeira',err));
 import('./dashboard-order.js?build=20260828-2108').catch(err=>console.error('Falha ao organizar dashboard',err));
-import('./cash-visuals.js?build=20260828-2118').catch(err=>console.error('Falha ao carregar gráficos de caixa',err));
+import('./cash-visuals.js?build=20260828-2128').catch(err=>console.error('Falha ao carregar gráficos de caixa',err));
