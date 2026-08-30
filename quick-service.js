@@ -11,3 +11,4 @@ import('./finance-insights.js?build=20260828-2049').catch(err=>console.error('Fa
 import('./dashboard-order.js?build=20260828-2108').catch(err=>console.error('Falha ao organizar dashboard',err));
 import('./cash-visuals.js?build=20260828-2128').catch(err=>console.error('Falha ao carregar gráficos de caixa',err));
 import('./executive-dashboard.js?build=20260828-2138').catch(err=>console.error('Falha ao carregar dashboard executivo',err));
+import('./monthly-ledger.js?build=20260830-1152').catch(err=>console.error('Falha ao carregar lançamentos mensais',err));
