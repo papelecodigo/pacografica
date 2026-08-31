@@ -3,157 +3,283 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#0a1324" />
-  <title>Papel e Código | Gestão</title>
+  <meta name="theme-color" content="#081426" />
+  <title>Papel e Código | ERP da Gráfica</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./styles.css?build=20260828-2108" />
+  <link rel="stylesheet" href="./erp-v5.css?build=20260831-0930" />
 </head>
 <body>
   <div id="toast" class="toast"></div>
 
   <section id="loginView" class="login-view">
-    <div class="login-shell">
-      <aside class="login-brand">
-        <img src="./assets/brand-mark.png" class="login-logo" alt="Papel e Código">
-        <div>
-          <span>GESTÃO DA GRÁFICA</span>
-          <h1>Controle financeiro e comercial, sem ruído.</h1>
-          <p>Vendas, custos, serviços, clientes, investimentos e projeções em um único painel.</p>
-        </div>
-        <small>Onde sua marca acontece.</small>
-      </aside>
-      <main class="login-panel">
-        <form id="loginForm" class="login-card">
-          <p class="eyebrow">ACESSO</p>
-          <h2>Entrar no sistema</h2>
-          <label>E-mail<input id="email" type="email" autocomplete="email" required></label>
-          <label>Senha<input id="password" type="password" autocomplete="current-password" required></label>
-          <button class="btn btn-primary btn-lg" type="submit">Entrar</button>
-          <p id="configWarning" class="warning hidden">Configure o Supabase em config.js.</p>
-        </form>
-      </main>
-    </div>
+    <aside class="login-brand">
+      <img src="./assets/brand-mark.png" alt="Papel e Código" class="login-logo">
+      <div>
+        <span class="eyebrow light">ERP DA GRÁFICA</span>
+        <h1>Da conversa com o cliente ao dinheiro no caixa.</h1>
+        <p>Atendimento, orçamento, produção, estoque, financeiro e inteligência no mesmo fluxo.</p>
+      </div>
+      <small>Onde sua marca acontece.</small>
+    </aside>
+    <main class="login-panel">
+      <form id="loginForm" class="login-card">
+        <p class="eyebrow">ACESSO</p>
+        <h2>Entrar no sistema</h2>
+        <label>E-mail<input id="email" type="email" autocomplete="email" required></label>
+        <label>Senha<input id="password" type="password" autocomplete="current-password" required></label>
+        <button class="btn primary wide" type="submit">Entrar</button>
+        <p id="configWarning" class="warning hidden">Supabase não configurado.</p>
+      </form>
+    </main>
   </section>
 
   <div id="appView" class="app hidden">
-    <aside class="sidebar">
-      <div>
-        <div class="sidebar-brand"><img src="./assets/brand-mark.png" alt="Papel e Código"><div><strong>papel</strong><span>e código</span></div></div>
-        <div class="nav-label">GESTÃO</div>
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-top">
+        <div class="brand-row">
+          <img src="./assets/brand-mark.png" alt="Papel e Código">
+          <div><strong>papel</strong><span>e código</span></div>
+          <button id="closeSidebar" class="icon-btn mobile-only" aria-label="Fechar menu">×</button>
+        </div>
+
         <nav class="nav">
-          <button class="nav-item active" data-section="dashboard">Visão geral</button>
-          <button class="nav-item" data-section="sale">Nova venda</button>
-          <button class="nav-item" data-section="services">Serviços</button>
-          <button class="nav-item" data-section="funnel">Funil</button>
-          <button class="nav-item" data-section="finance">Financeiro</button>
-          <button class="nav-item" data-section="investments">Investimentos</button>
-          <button class="nav-item" data-section="history">Histórico</button>
-          <button class="nav-item" data-section="settings">Configurações</button>
+          <p>GESTÃO</p>
+          <button class="nav-item active" data-section="dashboard"><span>◫</span>Visão geral</button>
+          <button class="nav-item" data-section="customers"><span>◎</span>Clientes</button>
+          <button class="nav-item" data-section="quotes"><span>▤</span>Orçamentos</button>
+          <button class="nav-item" data-section="orders"><span>▣</span>Pedidos</button>
+          <button class="nav-item" data-section="production"><span>◆</span>Produção</button>
+          <button class="nav-item" data-section="tasks"><span>✓</span>Tarefas</button>
+
+          <p>COMERCIAL</p>
+          <button class="nav-item" data-section="sale"><span>＋</span>Venda rápida</button>
+          <button class="nav-item" data-section="catalog"><span>▦</span>Catálogo</button>
+          <button class="nav-item" data-section="funnel"><span>◇</span>CRM / Funil</button>
+
+          <p>OPERAÇÃO</p>
+          <button class="nav-item" data-section="stock"><span>▥</span>Estoque</button>
+          <button class="nav-item" data-section="suppliers"><span>◉</span>Fornecedores</button>
+
+          <p>FINANCEIRO</p>
+          <button class="nav-item" data-section="finance"><span>R$</span>Financeiro</button>
+          <button class="nav-item" data-section="investments"><span>↗</span>Investimentos</button>
+          <button class="nav-item" data-section="ledger"><span>≡</span>Lançamentos</button>
+
+          <p>SISTEMA</p>
+          <button class="nav-item" data-section="automations"><span>⚙</span>Automações</button>
+          <button class="nav-item" data-section="settings"><span>☷</span>Configurações</button>
         </nav>
       </div>
-      <div class="sidebar-foot"><span class="online-dot"></span>Sistema online<button id="logoutBtn">Sair</button></div>
+      <footer class="sidebar-foot">
+        <div><i id="dbDot"></i><span id="dbStatus">Conectando...</span></div>
+        <button id="logoutBtn">Sair</button>
+      </footer>
     </aside>
 
     <main class="main">
       <header class="topbar">
-        <div><p id="todayLabel" class="eyebrow"></p><h2 id="pageTitle">Visão geral</h2></div>
-        <button id="newSaleTopBtn" class="btn btn-primary">+ Nova venda</button>
+        <button id="openSidebar" class="icon-btn mobile-only">☰</button>
+        <div class="page-heading">
+          <p id="todayLabel" class="eyebrow"></p>
+          <h2 id="pageTitle">Visão geral</h2>
+        </div>
+        <div class="top-actions">
+          <button id="globalSearchBtn" class="search-trigger">⌕ <span>Buscar cliente, pedido, orçamento...</span><kbd>Ctrl K</kbd></button>
+          <button id="refreshBtn" class="btn ghost">Atualizar</button>
+          <button id="newPrimaryBtn" class="btn primary">+ Nova venda</button>
+        </div>
       </header>
 
       <section id="section-dashboard" class="section active">
-        <div class="kpi-grid six">
-          <article class="kpi primary"><span>Faturamento no mês</span><strong id="kpiRevenue">R$ 0,00</strong><small id="kpiRevenueCount">0 vendas</small></article>
-          <article class="kpi"><span>Lucro bruto</span><strong id="kpiGrossProfit">R$ 0,00</strong><small id="kpiGrossMargin">0% margem</small></article>
-          <article class="kpi"><span>Resultado operacional</span><strong id="kpiOperatingProfit">R$ 0,00</strong><small>após despesas e impostos</small></article>
-          <article class="kpi"><span>Fluxo de caixa</span><strong id="kpiCashFlow">R$ 0,00</strong><small>inclui investimentos</small></article>
-          <article class="kpi"><span>Ticket médio</span><strong id="kpiTicket">R$ 0,00</strong><small>por venda</small></article>
-          <article class="kpi target"><span>Meta mensal</span><strong id="kpiTarget">R$ 0,00</strong><small id="kpiTargetPct">0% atingido</small></article>
+        <div id="schemaBanner" class="schema-banner hidden">
+          <div><strong>ERP V5 funcionando em modo local.</strong><span>Execute <b>migration-v5-complete.sql</b> no Supabase para sincronizar os novos módulos na nuvem.</span></div>
+          <button id="dismissSchemaBanner" class="btn ghost small">Entendi</button>
         </div>
 
-        <div class="projection-band">
-          <div><span>PROJEÇÃO DE FECHAMENTO</span><strong id="projectionProbable">R$ 0,00</strong><small id="projectionInfo">Aguardando dados</small></div>
-          <div class="scenario"><span>Conservador</span><b id="projectionLow">R$ 0,00</b></div>
-          <div class="scenario"><span>Provável</span><b id="projectionMid">R$ 0,00</b></div>
-          <div class="scenario"><span>Otimista</span><b id="projectionHigh">R$ 0,00</b></div>
-          <div class="scenario"><span>Ponto de equilíbrio</span><b id="breakEven">—</b></div>
+        <div class="hero-grid">
+          <article class="hero-card dark">
+            <p class="eyebrow light">FATURAMENTO NO MÊS</p>
+            <strong id="dashRevenue">R$ 0,00</strong>
+            <div class="hero-meta"><span id="dashRevenueCount">0 vendas</span><span id="dashTargetPct">0% da meta</span></div>
+            <div class="progress-track"><i id="dashTargetBar"></i></div>
+          </article>
+          <article class="metric-card"><span>Lucro operacional</span><strong id="dashProfit">R$ 0,00</strong><small id="dashMargin">0% margem</small></article>
+          <article class="metric-card"><span>Pipeline comercial</span><strong id="dashPipeline">R$ 0,00</strong><small id="dashOpenQuotes">0 orçamentos abertos</small></article>
+          <article class="metric-card"><span>Pedidos em produção</span><strong id="dashProduction">0</strong><small id="dashLateOrders">0 em risco</small></article>
+          <article class="metric-card"><span>Tarefas pendentes</span><strong id="dashTasks">0</strong><small id="dashLateTasks">0 atrasadas</small></article>
+          <article class="metric-card"><span>Estoque crítico</span><strong id="dashLowStock">0</strong><small>itens abaixo do mínimo</small></article>
         </div>
 
         <div class="dashboard-grid">
-          <article class="panel chart-panel"><div class="panel-head"><div><p class="eyebrow">MÊS</p><h3>Faturamento acumulado</h3></div></div><div class="chart-box"><canvas id="revenueChart"></canvas></div></article>
-          <article class="panel chart-panel"><div class="panel-head"><div><p class="eyebrow">RESULTADO</p><h3>Receita, custo e lucro</h3></div></div><div class="chart-box"><canvas id="profitChart"></canvas></div></article>
-          <article class="panel"><div class="panel-head"><div><p class="eyebrow">COMERCIAL</p><h3>Funil atual</h3></div><button class="text-action" data-go="funnel">Abrir funil</button></div><div id="funnelMini" class="funnel-mini"></div></article>
-          <article class="panel"><div class="panel-head"><div><p class="eyebrow">SERVIÇOS</p><h3>Mais rentáveis</h3></div><button class="text-action" data-go="services">Ver serviços</button></div><div id="serviceRanking" class="ranking"></div></article>
+          <article class="panel span-2">
+            <div class="panel-head"><div><p class="eyebrow">DESEMPENHO</p><h3>Faturamento acumulado</h3></div><div class="pill" id="projectionPill">Projeção R$ 0</div></div>
+            <div class="chart-box"><canvas id="revenueChart"></canvas></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head"><div><p class="eyebrow">INTELIGÊNCIA</p><h3>Precisa da sua atenção</h3></div></div>
+            <div id="smartAlerts" class="alert-list"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head"><div><p class="eyebrow">PRODUÇÃO</p><h3>Fila atual</h3></div><button class="text-action" data-go="production">Abrir PCP</button></div>
+            <div id="productionMini" class="mini-list"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head"><div><p class="eyebrow">COMERCIAL</p><h3>Conversão</h3></div><button class="text-action" data-go="funnel">Abrir CRM</button></div>
+            <div id="commercialMini" class="mini-list"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head"><div><p class="eyebrow">PRODUTOS</p><h3>Mais rentáveis</h3></div><button class="text-action" data-go="catalog">Catálogo</button></div>
+            <div id="rankingMini" class="mini-list"></div>
+          </article>
         </div>
       </section>
 
+      <section id="section-customers" class="section">
+        <div class="section-toolbar">
+          <div class="toolbar-search"><input id="customerSearch" placeholder="Buscar nome, telefone, empresa..."></div>
+          <button id="newCustomerBtn" class="btn primary">+ Novo cliente</button>
+        </div>
+        <div id="customerStats" class="stats-row"></div>
+        <article class="panel"><div id="customersList" class="records"></div></article>
+      </section>
+
+      <section id="section-quotes" class="section">
+        <div class="section-toolbar">
+          <div class="filters"><select id="quoteStatusFilter"><option value="">Todos os status</option><option value="draft">Rascunho</option><option value="sent">Enviado</option><option value="waiting">Aguardando</option><option value="negotiation">Negociação</option><option value="approved">Aprovado</option><option value="lost">Perdido</option></select></div>
+          <button id="newQuoteBtn" class="btn primary">+ Novo orçamento</button>
+        </div>
+        <div id="quoteStats" class="stats-row"></div>
+        <article class="panel"><div id="quotesList" class="records"></div></article>
+      </section>
+
+      <section id="section-orders" class="section">
+        <div class="section-toolbar"><div class="filters"><select id="orderStatusFilter"><option value="">Todos os pedidos</option><option value="approved">Aprovados</option><option value="art">Arte</option><option value="waiting_approval">Aguardando aprovação</option><option value="print_queue">Fila de impressão</option><option value="printing">Imprimindo</option><option value="finishing">Acabamento</option><option value="cutting">Corte</option><option value="assembly">Montagem</option><option value="quality">Conferência</option><option value="ready">Prontos</option><option value="delivered">Entregues</option></select></div><button id="newOrderBtn" class="btn primary">+ Pedido manual</button></div>
+        <div id="orderStats" class="stats-row"></div>
+        <article class="panel"><div id="ordersList" class="records"></div></article>
+      </section>
+
+      <section id="section-production" class="section">
+        <div class="section-toolbar"><div><p class="muted">Arraste os cartões ou use “Avançar”. O prazo e a prioridade ficam visíveis no cartão.</p></div><button id="productionRefreshBtn" class="btn ghost">Atualizar fila</button></div>
+        <div id="productionKanban" class="kanban wide"></div>
+      </section>
+
+      <section id="section-tasks" class="section">
+        <div class="section-toolbar"><div class="filters"><select id="taskFilter"><option value="open">Pendentes</option><option value="today">Hoje</option><option value="late">Atrasadas</option><option value="done">Concluídas</option><option value="all">Todas</option></select></div><button id="newTaskBtn" class="btn primary">+ Nova tarefa</button></div>
+        <div id="taskStats" class="stats-row"></div>
+        <article class="panel"><div id="tasksList" class="records"></div></article>
+      </section>
+
       <section id="section-sale" class="section">
-        <div class="sale-layout">
-          <div class="sale-editor">
+        <div class="sale-grid">
+          <div class="stack">
             <article class="panel">
-              <div class="section-title"><span>01</span><div><h3>Atendimento</h3><p>Responsável e dados do cliente.</p></div></div>
-              <div class="form-grid three">
-                <label>Responsável<select id="saleSeller"><option value="">Selecione</option><option>IGOR</option><option>JHONATAN</option><option>BEATRIZ</option></select></label>
-                <label>Cliente<input id="saleCustomer" placeholder="Nome do cliente"></label>
-                <label>WhatsApp<div class="input-action"><input id="salePhone" inputmode="tel" placeholder="(31) 99999-9999"><button id="saleWhatsappBtn" type="button">WA</button></div></label>
-              </div>
+              <div class="section-title"><b>01</b><div><h3>Atendimento</h3><p>Cliente, responsável e observações.</p></div></div>
+              <div class="form-grid three"><label>Responsável<select id="saleSeller"><option value="">Selecione</option><option>IGOR</option><option>JHONATAN</option><option>BEATRIZ</option></select></label><label>Cliente<input id="saleCustomer" placeholder="Nome do cliente"></label><label>WhatsApp<input id="salePhone" placeholder="(31) 99999-9999"></label></div>
               <label>Observação<input id="saleNote" placeholder="Prazo, acabamento, retirada..."></label>
             </article>
             <article class="panel">
-              <div class="section-title items-head"><span>02</span><div><h3>Itens da venda</h3><p>Escolha um serviço cadastrado ou use item personalizado.</p></div><button id="addItemBtn" class="btn btn-outline" type="button">+ Item</button></div>
+              <div class="panel-head"><div class="section-title"><b>02</b><div><h3>Itens</h3><p>Produto do catálogo ou item personalizado.</p></div></div><button id="addSaleItemBtn" class="btn ghost small">+ Item</button></div>
               <div id="saleItems" class="sale-items"></div>
             </article>
           </div>
           <aside class="checkout-card">
             <p class="eyebrow">RESUMO</p><h3>Recebimento</h3>
-            <div class="summary-row"><span>Subtotal</span><strong id="saleSubtotal">R$ 0,00</strong></div>
+            <div class="summary-line"><span>Subtotal</span><strong id="saleSubtotal">R$ 0,00</strong></div>
             <label>Desconto<input id="saleDiscount" type="number" min="0" step="0.01" value="0"></label>
-            <div class="summary-row total"><span>Total</span><strong id="saleTotal">R$ 0,00</strong></div>
+            <div class="summary-line total"><span>Total</span><strong id="saleTotal">R$ 0,00</strong></div>
             <label>Pagamento<select id="salePayment"><option value="pix">Pix</option><option value="dinheiro">Dinheiro</option><option value="debito">Débito</option><option value="credito">Crédito</option><option value="outro">Outro</option></select></label>
-            <button id="finishSaleBtn" class="btn btn-primary btn-lg">Finalizar venda</button>
+            <button id="finishSaleBtn" class="btn primary wide">Finalizar venda</button>
           </aside>
         </div>
       </section>
 
-      <section id="section-services" class="section">
-        <div class="split-layout">
-          <article class="panel"><div class="panel-head"><div><p class="eyebrow">CATÁLOGO</p><h3>Serviços cadastrados</h3></div></div><div id="servicesTable" class="data-list"></div></article>
-          <article class="panel form-panel"><p class="eyebrow">NOVO SERVIÇO</p><h3 id="serviceFormTitle">Cadastrar serviço</h3><form id="serviceForm" class="form-stack"><input id="serviceId" type="hidden"><label>Nome<input id="serviceName" required></label><label>Categoria<input id="serviceCategory" placeholder="Cartões, adesivos, embalagens..."></label><div class="form-grid two"><label>Preço de venda<input id="servicePrice" type="number" min="0" step="0.01" required></label><label>Custo direto<input id="serviceCost" type="number" min="0" step="0.01" required></label></div><button class="btn btn-primary" type="submit">Salvar serviço</button><button id="cancelServiceEdit" class="btn btn-ghost hidden" type="button">Cancelar edição</button></form></article>
-        </div>
+      <section id="section-catalog" class="section">
+        <div class="section-toolbar"><div class="catalog-tools"><input id="catalogSearch" placeholder="Buscar produto..."><select id="catalogCategory"><option value="">Todas as categorias</option></select></div><div class="toolbar-actions"><button id="seedCatalogBtn" class="btn ghost">Restaurar itens do catálogo</button><button id="newProductBtn" class="btn primary">+ Novo produto</button></div></div>
+        <div id="catalogSummary" class="stats-row"></div>
+        <div id="catalogGrid" class="product-grid"></div>
       </section>
 
       <section id="section-funnel" class="section">
-        <div class="funnel-toolbar"><button id="newLeadBtn" class="btn btn-primary">+ Novo atendimento</button><div><strong id="pipelineValue">R$ 0,00</strong><span>em oportunidades abertas</span></div><div><strong id="conversionRate">0%</strong><span>conversão para aprovado</span></div></div>
-        <div id="kanban" class="kanban"></div>
+        <div class="section-toolbar"><div class="pipeline-summary"><div><strong id="pipelineValue">R$ 0,00</strong><span>em oportunidades</span></div><div><strong id="conversionRate">0%</strong><span>conversão</span></div></div><button id="newLeadBtn" class="btn primary">+ Novo atendimento</button></div>
+        <div id="crmKanban" class="kanban"></div>
+      </section>
+
+      <section id="section-stock" class="section">
+        <div class="section-toolbar"><div class="toolbar-search"><input id="stockSearch" placeholder="Buscar insumo..."></div><button id="newStockBtn" class="btn primary">+ Novo insumo</button></div>
+        <div id="stockStats" class="stats-row"></div>
+        <div class="two-columns"><article class="panel"><div class="panel-head"><div><p class="eyebrow">ESTOQUE</p><h3>Insumos</h3></div></div><div id="stockList" class="records"></div></article><article class="panel"><div class="panel-head"><div><p class="eyebrow">COMPRAS</p><h3>Reposição sugerida</h3></div></div><div id="purchaseSuggestions" class="records compact"></div></article></div>
+      </section>
+
+      <section id="section-suppliers" class="section">
+        <div class="section-toolbar"><div class="toolbar-search"><input id="supplierSearch" placeholder="Buscar fornecedor..."></div><button id="newSupplierBtn" class="btn primary">+ Novo fornecedor</button></div>
+        <article class="panel"><div id="suppliersList" class="records"></div></article>
       </section>
 
       <section id="section-finance" class="section">
-        <div class="finance-layout">
-          <article class="panel"><div class="panel-head"><div><p class="eyebrow">LANÇAMENTOS</p><h3>Entradas e saídas do mês</h3></div></div><div id="movementList" class="data-list"></div></article>
-          <article class="panel form-panel"><p class="eyebrow">NOVO LANÇAMENTO</p><h3>Movimentação financeira</h3><form id="movementForm" class="form-stack"><label>Tipo<select id="movementType"><option value="entrada">Entrada</option><option value="saida">Saída</option></select></label><label>Natureza<select id="movementNature"><option value="operational">Operacional</option><option value="investment">Investimento / máquina</option><option value="other">Outro</option></select></label><label>Categoria<input id="movementCategory" placeholder="Energia, papel, parcela impressora..."></label><label>Descrição<input id="movementDescription" required></label><label>Valor<input id="movementAmount" type="number" min="0.01" step="0.01" required></label><button class="btn btn-primary" type="submit">Registrar</button></form></article>
-        </div>
+        <div id="financeStats" class="stats-row"></div>
+        <div class="finance-tabs"><button class="tab active" data-fin="receivables">Contas a receber</button><button class="tab" data-fin="payables">Contas a pagar</button><button class="tab" data-fin="cash">Caixa</button></div>
+        <div id="financeReceivables" class="finance-pane active"><div class="section-toolbar"><div></div><button id="newReceivableBtn" class="btn primary">+ Conta a receber</button></div><article class="panel"><div id="receivablesList" class="records"></div></article></div>
+        <div id="financePayables" class="finance-pane"><div class="section-toolbar"><div></div><button id="newPayableBtn" class="btn primary">+ Conta a pagar</button></div><article class="panel"><div id="payablesList" class="records"></div></article></div>
+        <div id="financeCash" class="finance-pane"><article class="panel"><div class="panel-head"><div><p class="eyebrow">CAIXA REAL</p><h3>Entradas e saídas do mês</h3></div></div><div id="cashList" class="records"></div></article></div>
       </section>
 
       <section id="section-investments" class="section">
-        <div class="split-layout"><article class="panel"><div class="panel-head"><div><p class="eyebrow">PATRIMÔNIO</p><h3>Máquinas e investimentos</h3></div></div><div id="investmentsList" class="investment-list"></div></article><article class="panel form-panel"><p class="eyebrow">NOVO INVESTIMENTO</p><h3>Cadastrar máquina</h3><form id="investmentForm" class="form-stack"><input id="investmentId" type="hidden"><label>Nome<input id="investmentName" placeholder="Epson L8180" required></label><div class="form-grid two"><label>Valor total<input id="investmentTotal" type="number" min="0" step="0.01"></label><label>Valor da parcela<input id="investmentInstallment" type="number" min="0" step="0.01"></label></div><div class="form-grid two"><label>Total de parcelas<input id="investmentTotalInstallments" type="number" min="1" value="1"></label><label>Parcelas pagas<input id="investmentPaidInstallments" type="number" min="0" value="0"></label></div><label>Data da compra<input id="investmentDate" type="date"></label><label>Observação<input id="investmentNote"></label><button class="btn btn-primary" type="submit">Salvar investimento</button></form></article></div>
+        <div class="section-toolbar"><div></div><button id="newInvestmentBtn" class="btn primary">+ Novo investimento</button></div>
+        <div id="investmentStats" class="stats-row"></div>
+        <div id="investmentsList" class="investment-grid"></div>
       </section>
 
-      <section id="section-history" class="section">
-        <article class="panel"><div class="history-toolbar"><div><p class="eyebrow">VENDAS</p><h3>Histórico</h3></div><input id="historyDate" type="date"></div><div class="table-wrap"><table><thead><tr><th>Horário</th><th>Cliente</th><th>Responsável</th><th>Pagamento</th><th>Total</th><th>Ações</th></tr></thead><tbody id="historyBody"></tbody></table></div></article>
+      <section id="section-ledger" class="section">
+        <div class="section-toolbar"><div class="filters"><input id="ledgerMonth" type="month"></div><button id="newMovementBtn" class="btn primary">+ Novo lançamento</button></div>
+        <div id="ledgerStats" class="stats-row"></div>
+        <article class="panel"><div id="ledgerList" class="records"></div></article>
+      </section>
+
+      <section id="section-automations" class="section">
+        <div class="section-toolbar"><div><p class="muted">Regras seguras podem agir sozinhas; decisões financeiras críticas continuam exigindo confirmação.</p></div><button id="newAutomationBtn" class="btn primary">+ Nova automação</button></div>
+        <div id="automationStats" class="stats-row"></div>
+        <div id="automationsList" class="automation-grid"></div>
       </section>
 
       <section id="section-settings" class="section">
-        <article class="panel settings-panel"><div class="panel-head"><div><p class="eyebrow">EMPRESA</p><h3>Dados da Papel e Código</h3><p>Essas informações aparecem no recibo e alimentam as métricas.</p></div></div><form id="settingsForm" class="settings-form"><div class="form-grid two"><label>Nome fantasia<input id="setTradeName"></label><label>Razão social<input id="setLegalName"></label></div><div class="form-grid three"><label>CNPJ<input id="setCnpj"></label><label>Inscrição Estadual<input id="setIE"></label><label>CEP<input id="setZip"></label></div><label>Endereço<input id="setAddress"></label><div class="form-grid two"><label>Cidade<input id="setCity"></label><label>UF<input id="setState" maxlength="2"></label></div><div class="form-grid three"><label>Telefone<input id="setPhone"></label><label>WhatsApp<input id="setWhatsapp"></label><label>E-mail<input id="setEmail" type="email"></label></div><div class="form-grid three"><label>Instagram<input id="setInstagram"></label><label>Site<input id="setWebsite"></label><label>Chave PIX<input id="setPix"></label></div><div class="form-grid two"><label>Meta mensal de faturamento<input id="setTarget" type="number" min="0" step="0.01"></label><label>Imposto estimado (%)<input id="setTax" type="number" min="0" max="100" step="0.01"></label></div><label>Rodapé do recibo<input id="setReceiptFooter"></label><button class="btn btn-primary" type="submit">Salvar configurações</button></form></article>
+        <article class="panel settings-card">
+          <div class="panel-head"><div><p class="eyebrow">EMPRESA</p><h3>Configurações gerais</h3><p>Dados fiscais, contato, meta e regras de margem.</p></div></div>
+          <form id="settingsForm" class="settings-form">
+            <div class="form-grid two"><label>Nome fantasia<input id="setTradeName"></label><label>Razão social<input id="setLegalName"></label></div>
+            <div class="form-grid three"><label>CNPJ<input id="setCnpj"></label><label>Inscrição Estadual<input id="setIE"></label><label>CEP<input id="setZip"></label></div>
+            <label>Endereço<input id="setAddress"></label>
+            <div class="form-grid two"><label>Cidade<input id="setCity"></label><label>UF<input id="setState" maxlength="2"></label></div>
+            <div class="form-grid three"><label>Telefone<input id="setPhone"></label><label>WhatsApp<input id="setWhatsapp"></label><label>E-mail<input id="setEmail" type="email"></label></div>
+            <div class="form-grid three"><label>Instagram<input id="setInstagram"></label><label>Site<input id="setWebsite"></label><label>Chave PIX<input id="setPix"></label></div>
+            <div class="form-grid three"><label>Meta mensal<input id="setTarget" type="number" min="0" step="0.01"></label><label>Imposto estimado (%)<input id="setTax" type="number" min="0" max="100" step="0.01"></label><label>Margem mínima padrão (%)<input id="setMinMargin" type="number" min="0" max="99" step="0.1" value="50"></label></div>
+            <label>Rodapé do recibo<input id="setReceiptFooter"></label>
+            <button class="btn primary" type="submit">Salvar configurações</button>
+          </form>
+        </article>
       </section>
     </main>
   </div>
 
-  <dialog id="saleDoneDialog"><div class="modal-card"><button class="modal-x" id="closeDoneBtn">×</button><p class="eyebrow">VENDA REGISTRADA</p><h3 id="doneSaleTitle">Tudo certo.</h3><strong id="doneSaleTotal" class="modal-total">R$ 0,00</strong><div class="modal-actions"><button id="downloadReceiptBtn" class="btn btn-outline">Baixar PDF</button><button id="shareReceiptBtn" class="btn btn-primary">Compartilhar</button><button id="whatsappReceiptBtn" class="btn btn-whatsapp">WhatsApp</button></div></div></dialog>
+  <dialog id="entityDialog" class="modal">
+    <form id="entityForm" method="dialog">
+      <div class="modal-head"><div><p id="modalEyebrow" class="eyebrow">CADASTRO</p><h3 id="modalTitle">Novo registro</h3></div><button id="closeModalBtn" class="icon-btn" type="button">×</button></div>
+      <div id="modalBody" class="modal-body"></div>
+      <div class="modal-foot"><button id="cancelModalBtn" class="btn ghost" type="button">Cancelar</button><button id="saveModalBtn" class="btn primary" type="submit">Salvar</button></div>
+    </form>
+  </dialog>
 
-  <dialog id="leadDialog"><form id="leadForm" class="modal-card"><button type="button" class="modal-x" id="closeLeadBtn">×</button><p class="eyebrow">ATENDIMENTO</p><h3>Novo cliente no funil</h3><input id="leadId" type="hidden"><label>Cliente<input id="leadName" required></label><label>WhatsApp<input id="leadPhone"></label><label>Interesse<input id="leadInterest" placeholder="Ex.: 500 cartões"></label><label>Valor estimado<input id="leadValue" type="number" min="0" step="0.01"></label><label>Responsável<select id="leadSeller"><option value="">—</option><option>IGOR</option><option>JHONATAN</option><option>BEATRIZ</option></select></label><label>Observação<input id="leadNote"></label><button class="btn btn-primary" type="submit">Salvar atendimento</button></form></dialog>
+  <dialog id="searchDialog" class="search-dialog">
+    <div class="search-box"><div class="search-input-row">⌕<input id="globalSearch" autocomplete="off" placeholder="Digite nome, telefone, código, produto..."><button id="closeSearchBtn" class="icon-btn">×</button></div><div id="searchResults" class="search-results"></div></div>
+  </dialog>
 
-  <script type="module" src="./app.js?build=20260828-2108"></script>
-  <script type="module" src="./quick-service.js?build=20260828-2108"></script>
+  <dialog id="receiptDialog" class="modal small-modal">
+    <div class="modal-head"><div><p class="eyebrow">VENDA CONCLUÍDA</p><h3 id="receiptTitle">Venda registrada.</h3></div><button id="closeReceiptBtn" class="icon-btn">×</button></div>
+    <div class="receipt-success"><strong id="receiptTotal">R$ 0,00</strong><p>Registro financeiro atualizado.</p></div>
+    <div class="modal-foot"><button id="receiptPdfBtn" class="btn ghost">Baixar PDF</button><button id="receiptWhatsappBtn" class="btn primary">WhatsApp</button></div>
+  </dialog>
+
+  <script type="module" src="./erp-v5.js?build=20260831-0930"></script>
 </body>
 </html>
