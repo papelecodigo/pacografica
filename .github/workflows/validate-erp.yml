@@ -17,6 +17,7 @@ jobs:
           node --check erp-v5.js
           node --check erp-db.js
           node --check erp-data.js
+          node --check quick-ops.js
       - name: Check required front files
         run: |
           test -s index.html
@@ -24,9 +25,12 @@ jobs:
           test -s erp-v5.js
           test -s erp-db.js
           test -s erp-data.js
+          test -s quick-ops.js
+          test -s quick-ops.css
           test -s migration-v5-complete.sql
           grep -q 'erp-v5.js' index.html
           grep -q 'erp-v5.css' index.html
+          grep -q 'quick-ops.js' config.js
           grep -q 'section-dashboard' index.html
           grep -q 'section-customers' index.html
           grep -q 'section-quotes' index.html
