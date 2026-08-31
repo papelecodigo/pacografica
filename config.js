@@ -3,9 +3,16 @@
 export const SUPABASE_URL = "https://vvdrhzupgwveajmhssll.supabase.co";
 export const SUPABASE_ANON_KEY = "sb_publishable_kek4KjnDTgfBsI8WGVMLZg_9b6CJt0f";
 
-// O ERP V5 importa este arquivo diretamente.
+// O ERP importa este arquivo diretamente.
 if (typeof window !== 'undefined') {
   window.__PACO_SUPABASE = { url: SUPABASE_URL, key: SUPABASE_ANON_KEY };
-  // Camada de produtividade: + Criar, Hoje, tarefas rápidas, atalhos e Ctrl+K.
-  queueMicrotask(() => import('./quick-ops.js').catch((error) => console.error('Erro ao carregar operação rápida:', error)));
+  // Carrega primeiro a operação rápida e, em seguida, a camada V6 de foco/hierarquia visual.
+  queueMicrotask(async () => {
+    try {
+      await import('./quick-ops.js');
+      await import('./focus-v6.js');
+    } catch (error) {
+      console.error('Erro ao carregar camadas operacionais:', error);
+    }
+  });
 }
