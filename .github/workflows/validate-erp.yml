@@ -1,0 +1,24 @@
+name: Validate ERP V5
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check JavaScript syntax
+        run: |
+          node --check erp-v5.js
+          node --check erp-db.js
+          node --check erp-data.js
+      - name: Check required files
+        run: |
+          test -s index.html
+          test -s erp-v5.css
+          test -s migration-v5-complete.sql
