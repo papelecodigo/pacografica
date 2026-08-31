@@ -17,6 +17,18 @@ jobs:
           node --check erp-v5.js
           node --check erp-db.js
           node --check erp-data.js
+      - name: Check DOM references
+        run: |
+          node <<'NODE'
+          const fs=require('fs');
+          const html=fs.readFileSync('index.html','utf8');
+          const js=fs.readFileSync('erp-v5.js','utf8');
+          const ids=new Set([...html.matchAll(/id="([^"]+)"/g)].map(m=>m[1]));
+          const refs=[...js.matchAll(/\$\('([^']+)'\)/g)].map(m=>m[1]);
+          const missing=[...new Set(refs.filter(id=>!ids.has(id)))];
+          if(missing.length){console.error('Missing DOM ids:',missing.join(', '));process.exit(1)}
+          console.log(`Checked ${refs.length} DOM references.`);
+          NODE
       - name: Check required files
         run: |
           test -s index.html
