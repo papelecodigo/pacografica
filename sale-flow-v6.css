@@ -1,0 +1,40 @@
+/* Papel e Código — fluxo de venda e financeiro V6 */
+.sale-logistics-panel{display:flex;flex-direction:column;gap:14px}
+.sale-logistics-grid{align-items:end}
+.sale-pickup-info{border:1px solid #e3e9f2;background:#f8fbff;border-radius:12px;padding:12px 14px;display:grid;gap:3px}
+.sale-pickup-info span{font-size:9px;font-weight:800;color:#7b8ba0;text-transform:uppercase;letter-spacing:.08em}
+.sale-pickup-info b{font-size:11px;color:#13243b}
+.sale-pickup-info small{font-size:9px;color:#75859a}
+.sale-delivery-fields{border-top:1px solid #edf1f6;padding-top:12px}
+.sale-delivery-fields.hidden,.sale-pickup-info.hidden{display:none!important}
+.sale-entry-block{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:end;margin-top:2px}
+.sale-balance-preview{border:1px solid #e2e8f0;border-radius:10px;padding:9px 10px;background:#f8fafc;min-height:58px}
+.sale-balance-preview span,.sale-balance-preview small{display:block;font-size:8px;color:#8391a3}
+.sale-balance-preview strong{display:block;font-size:15px;margin:2px 0;color:#15253b}
+.sale-checkout-v6{position:sticky;top:90px;align-self:start}
+
+.today-finance-graph{background:#fff;border:1px solid #e3e9f1;border-radius:16px;padding:15px 17px 11px;box-shadow:0 8px 22px rgba(17,35,62,.045);margin-bottom:12px;overflow:hidden}
+.finance-graph-head{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:4px}
+.finance-graph-head>div:first-child span{font-size:8px;letter-spacing:.12em;font-weight:800;color:#7f8ea2}
+.finance-graph-head h3{font-size:16px;margin:2px 0 0;letter-spacing:-.025em;color:#102038}
+.finance-graph-kpis{display:flex;gap:18px;align-items:flex-start}
+.finance-graph-kpis div{min-width:105px}
+.finance-graph-kpis small{display:block;font-size:8px;color:#8996a7}
+.finance-graph-kpis b{display:block;font-size:13px;color:#14243a;margin-top:2px}
+.finance-graph-canvas{width:100%;aspect-ratio:10 / 4;max-height:185px;min-height:135px}
+.finance-graph-canvas svg{width:100%;height:100%;display:block;overflow:visible}
+.fg-line{fill:none;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.fg-real{stroke:#19a974;stroke-width:3}
+.fg-proj{stroke:#0b6bff;stroke-width:2.5;stroke-dasharray:8 7;opacity:.92}
+.fg-prev{stroke:#c5ceda;stroke-width:2;opacity:.85}
+.fg-zero{stroke:#e8edf3;stroke-width:1;vector-effect:non-scaling-stroke}
+.fg-days text{font:700 9px Manrope,sans-serif;fill:#9aa6b5}
+.finance-graph-legend{display:flex;gap:16px;font-size:8px;color:#7e8d9f;margin-top:-3px}
+.finance-graph-legend span{display:flex;align-items:center;gap:6px}
+.finance-graph-legend span:before{content:'';width:15px;height:2px;border-radius:2px;background:#c5ceda}
+.finance-graph-legend .real:before{background:#19a974;height:3px}
+.finance-graph-legend .projection:before{background:#0b6bff}
+.finance-graph-legend .previous:before{background:#c5ceda}
+
+@media(max-width:1100px){.sale-logistics-grid{grid-template-columns:repeat(2,1fr)!important}.finance-graph-head{flex-direction:column}.finance-graph-kpis{width:100%;justify-content:space-between}.finance-graph-kpis div{min-width:0}}
+@media(max-width:700px){.sale-entry-block{grid-template-columns:1fr}.sale-logistics-grid{grid-template-columns:1fr!important}.finance-graph-kpis{gap:8px;flex-wrap:wrap}.finance-graph-kpis div{flex:1 1 30%}.today-finance-graph{padding:13px}.finance-graph-canvas{min-height:120px;max-height:150px}}
