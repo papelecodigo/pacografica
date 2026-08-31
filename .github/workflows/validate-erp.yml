@@ -18,6 +18,7 @@ jobs:
           node --check erp-db.js
           node --check erp-data.js
           node --check quick-ops.js
+          node --check focus-v6.js
       - name: Check required front files
         run: |
           test -s index.html
@@ -27,10 +28,13 @@ jobs:
           test -s erp-data.js
           test -s quick-ops.js
           test -s quick-ops.css
+          test -s focus-v6.js
+          test -s focus-v6.css
           test -s migration-v5-complete.sql
           grep -q 'erp-v5.js' index.html
           grep -q 'erp-v5.css' index.html
           grep -q 'quick-ops.js' config.js
+          grep -q 'focus-v6.js' config.js
           grep -q 'section-dashboard' index.html
           grep -q 'section-customers' index.html
           grep -q 'section-quotes' index.html
