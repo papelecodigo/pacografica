@@ -35,6 +35,7 @@ const client = new Client({
 const digits = v => String(v || '').replace(/\D/g, '');
 const safeName = v => String(v || 'arquivo').replace(/[^a-zA-Z0-9._-]+/g, '-').slice(0, 120);
 const nowIso = () => new Date().toISOString();
+const profilePicCache = new Map();
 
 async function actorFromToken(token) {
   const { data, error } = await supabase.auth.getUser(token);
@@ -59,30 +60,61 @@ async function findCustomer(phone) {
   const { data } = await supabase.from('customers').select('*').eq('user_id', OWNER_USER_ID).eq('phone_digits', d).limit(1).maybeSingle();
   return data || null;
 }
-async function ensureCustomer(name, phone) {
-  const d = digits(phone); let customer = await findCustomer(d);
+async function ensureCustomer(name, phone, preferredCustomerId = null) {
+  const d = digits(phone);
+  let customer = d ? await findCustomer(d) : null;
+  if (!customer && preferredCustomerId) {
+    const { data } = await supabase.from('customers').select('*').eq('id', preferredCustomerId).eq('user_id', OWNER_USER_ID).maybeSingle();
+    customer = data || null;
+  }
   if (customer) {
-    if (name && (!customer.name || customer.name === customer.phone || customer.name === customer.whatsapp)) {
-      const { data } = await supabase.from('customers').update({ name, phone: d, whatsapp: d, source: customer.source || 'WhatsApp', updated_at: nowIso() }).eq('id', customer.id).select().single(); customer = data || customer;
+    const patch = {};
+    if (name && customer.name !== name) patch.name = name;
+    if (d && digits(customer.phone) !== d) patch.phone = d;
+    if (d && digits(customer.whatsapp) !== d) patch.whatsapp = d;
+    if (d && customer.phone_digits !== d) patch.phone_digits = d;
+    if (!customer.source) patch.source = 'WhatsApp';
+    if (Object.keys(patch).length) {
+      const { data } = await supabase.from('customers').update({ ...patch, updated_at: nowIso() }).eq('id', customer.id).select().single();
+      customer = data || { ...customer, ...patch };
     }
     return customer;
   }
   const { data, error } = await supabase.from('customers').insert({ user_id: OWNER_USER_ID, name: name || d || 'Contato WhatsApp', phone: d, whatsapp: d, phone_digits: d, source: 'WhatsApp', active: true }).select().single();
   if (error) throw error; return data;
 }
-async function createLeadIfNeeded(name, phone) {
+async function findOpenLeadByPhone(phone) {
+  const d = digits(phone); if (!d) return null;
+  const { data } = await supabase.from('leads').select('*').eq('user_id', OWNER_USER_ID).neq('stage', 'entregue').order('updated_at', { ascending: false }).limit(200);
+  return (data || []).find(x => digits(x.customer_phone) === d) || null;
+}
+async function ensureLead(name, phone, preferredLeadId = null) {
   const d = digits(phone);
-  const { data: existing } = await supabase.from('leads').select('*').eq('user_id', OWNER_USER_ID).neq('stage', 'entregue').order('updated_at', { ascending: false }).limit(100);
-  const found = (existing || []).find(x => digits(x.customer_phone) === d); if (found) return found;
+  let lead = d ? await findOpenLeadByPhone(d) : null;
+  if (!lead && preferredLeadId) {
+    const { data } = await supabase.from('leads').select('*').eq('id', preferredLeadId).eq('user_id', OWNER_USER_ID).maybeSingle();
+    lead = data || null;
+  }
+  if (lead) {
+    const patch = {};
+    if (name && lead.customer_name !== name) patch.customer_name = name;
+    if (d && digits(lead.customer_phone) !== d) patch.customer_phone = d;
+    if (Object.keys(patch).length) {
+      const { data } = await supabase.from('leads').update({ ...patch, updated_at: nowIso() }).eq('id', lead.id).select().single();
+      lead = data || { ...lead, ...patch };
+    }
+    return lead;
+  }
   const { data, error } = await supabase.from('leads').insert({ user_id: OWNER_USER_ID, customer_name: name || d || 'Contato WhatsApp', customer_phone: d, service_interest: 'Contato pelo WhatsApp', estimated_value: 0, seller_name: null, note: 'Solicitação criada automaticamente a partir de uma nova conversa no WhatsApp.', stage: 'novo' }).select().single();
   if (error) throw error; return data;
 }
 async function ensureThread(chatId, name, phone) {
   let { data: thread } = await supabase.from('whatsapp_threads').select('*').eq('user_id', OWNER_USER_ID).eq('whatsapp_chat_id', chatId).maybeSingle();
-  const customer = await ensureCustomer(name, phone), lead = await createLeadIfNeeded(name, phone);
+  const customer = await ensureCustomer(name, phone, thread?.customer_id || null);
+  const lead = await ensureLead(name, phone, thread?.lead_id || null);
   if (thread) {
     const patch = {};
-    if (!thread.customer_id && customer?.id) patch.customer_id = customer.id;
+    if (customer?.id && thread.customer_id !== customer.id) patch.customer_id = customer.id;
     if (lead?.id && thread.lead_id !== lead.id) patch.lead_id = lead.id;
     if (name && thread.customer_name !== name) patch.customer_name = name;
     if (digits(phone) && thread.phone !== digits(phone)) patch.phone = digits(phone);
@@ -102,13 +134,75 @@ async function signedMedia(pathValue) { if (!pathValue) return null; const { dat
 async function existsMessage(messageId) { if (!messageId) return null; const { data } = await supabase.from('whatsapp_messages').select('id').eq('user_id', OWNER_USER_ID).eq('whatsapp_message_id', messageId).maybeSingle(); return data || null; }
 async function mediaPayload(msg, threadId) {
   let mediaPath = null, mediaName = null, mimeType = null, fileSize = null;
-  if (msg.hasMedia) try { const media = await msg.downloadMedia(); if (media?.data) { const buffer = Buffer.from(media.data, 'base64'); mimeType = media.mimetype || 'application/octet-stream'; mediaName = media.filename || `whatsapp-${Date.now()}`; fileSize = buffer.length; mediaPath = await uploadMedia(threadId, buffer, mimeType, mediaName); } } catch (error) { console.error('[Mídia WhatsApp]', error); }
+  if (msg?.hasMedia) try { const media = await msg.downloadMedia(); if (media?.data) { const buffer = Buffer.from(media.data, 'base64'); mimeType = media.mimetype || 'application/octet-stream'; mediaName = media.filename || `whatsapp-${Date.now()}`; fileSize = buffer.length; mediaPath = await uploadMedia(threadId, buffer, mimeType, mediaName); } } catch (error) { console.error('[Mídia WhatsApp]', error); }
   return { mediaPath, mediaName, mimeType, fileSize };
 }
-async function contactForMessage(msg, chatId) {
-  try { const chat = await msg.getChat(), contact = await chat.getContact(); const phone = digits(contact?.number || String(chatId).split('@')[0]); const name = contact?.pushname || contact?.name || contact?.shortName || chat?.name || phone || 'Contato WhatsApp'; return { name, phone }; }
-  catch { const phone = digits(String(chatId).split('@')[0]); return { name: phone || 'Contato WhatsApp', phone }; }
+
+async function phoneIdFor(contactId) {
+  const raw = String(contactId || '').trim();
+  if (!raw) return '';
+  if (raw.endsWith('@c.us')) return raw;
+  try {
+    const rows = await client.getContactLidAndPhone([raw]);
+    const pn = rows?.find(row => row?.pn)?.pn;
+    if (pn) return pn;
+  } catch (error) {
+    console.warn('[WhatsApp LID] não foi possível mapear', raw, error?.message || error);
+  }
+  return raw;
 }
+async function profilePicFor(...contactIds) {
+  const ids = contactIds.map(x => String(x || '')).filter(Boolean);
+  for (const id of ids) {
+    const cached = profilePicCache.get(id);
+    if (cached && Date.now() - cached.at < 10 * 60 * 1000) return cached.url;
+    try {
+      const url = await client.getProfilePicUrl(id);
+      profilePicCache.set(id, { url: url || null, at: Date.now() });
+      if (url) return url;
+    } catch {}
+  }
+  return null;
+}
+async function contactForMessage(msg, chatId) {
+  const rawChatId = String(chatId || msg?.from || msg?.to || '');
+  let chat = null, contact = null;
+  try { chat = msg?.getChat ? await msg.getChat() : await client.getChatById(rawChatId); } catch {}
+  try { contact = msg?.getContact ? await msg.getContact() : (chat?.getContact ? await chat.getContact() : null); } catch {}
+
+  const rawContactId = contact?.id?._serialized || rawChatId;
+  let pnId = await phoneIdFor(rawContactId);
+  if ((!pnId || pnId.endsWith('@lid')) && rawChatId !== rawContactId) pnId = await phoneIdFor(rawChatId);
+
+  let phoneContact = null;
+  if (pnId && pnId !== rawContactId) {
+    try { phoneContact = await client.getContactById(pnId); } catch {}
+  }
+
+  const phone = digits(phoneContact?.number || (pnId && pnId.split('@')[0]) || contact?.number || rawChatId.split('@')[0]);
+  const rawFallback = digits(rawChatId.split('@')[0]);
+  const candidateNames = [
+    contact?.name,
+    contact?.pushname,
+    contact?.shortName,
+    phoneContact?.name,
+    phoneContact?.pushname,
+    phoneContact?.shortName,
+    chat?.name,
+    msg?._data?.notifyName,
+    msg?._data?.pushName
+  ].map(x => String(x || '').trim()).filter(Boolean);
+  const name = candidateNames.find(n => digits(n) !== n && n !== rawFallback && n !== phone) || candidateNames[0] || phone || 'Contato WhatsApp';
+  const profilePicUrl = await profilePicFor(rawContactId, pnId, rawChatId);
+  return { name, phone, profilePicUrl, rawContactId, phoneContactId: pnId || null };
+}
+async function refreshThreadIdentity(thread) {
+  if (!thread) return { thread: null, identity: null };
+  const identity = await contactForMessage(null, thread.whatsapp_chat_id);
+  const repaired = await ensureThread(thread.whatsapp_chat_id, identity.name, identity.phone);
+  return { thread: repaired, identity };
+}
+
 async function storeInbound(msg) {
   if (!msg || msg.fromMe || msg.isStatus) return; const chatId = String(msg.from || ''); if (chatId.endsWith('@g.us') || chatId.endsWith('@broadcast')) return;
   const messageId = msg.id?._serialized || null; if (await existsMessage(messageId)) return;
@@ -148,6 +242,15 @@ app.get('/api/whatsapp/status', requireUser, async (_req, res) => { let qrDataUr
 app.post('/api/whatsapp/logout', requireUser, requireOwner, async (_req, res) => { try { await client.logout(); waReady = false; waState = 'disconnected'; qrRaw = null; account = null; res.json({ ok: true }); } catch (error) { res.status(500).json({ error: error.message || 'Falha ao desconectar.' }); } });
 
 app.get('/api/threads', requireUser, async (req, res) => { const status = req.query.status || 'open'; let q = supabase.from('whatsapp_threads').select('*').eq('user_id', OWNER_USER_ID).order('last_message_at', { ascending: false, nullsFirst: false }); if (status !== 'all') q = q.eq('status', status); const { data, error } = await q.limit(200); if (error) return res.status(500).json({ error: error.message }); res.json({ threads: data || [] }); });
+app.get('/api/threads/:id/identity', requireUser, async (req, res) => {
+  try {
+    const { data: thread } = await supabase.from('whatsapp_threads').select('*').eq('id', req.params.id).eq('user_id', OWNER_USER_ID).maybeSingle();
+    if (!thread) return res.status(404).json({ error: 'Atendimento não encontrado.' });
+    if (!waReady) return res.json({ thread, identity: { name: thread.customer_name, phone: thread.phone, profilePicUrl: null } });
+    const result = await refreshThreadIdentity(thread);
+    res.json(result);
+  } catch (error) { res.status(500).json({ error: error.message || 'Falha ao identificar contato.' }); }
+});
 app.get('/api/threads/:id/messages', requireUser, async (req, res) => { const { data: thread } = await supabase.from('whatsapp_threads').select('*').eq('id', req.params.id).eq('user_id', OWNER_USER_ID).maybeSingle(); if (!thread) return res.status(404).json({ error: 'Atendimento não encontrado.' }); const { data, error } = await supabase.from('whatsapp_messages').select('*').eq('thread_id', thread.id).eq('user_id', OWNER_USER_ID).order('created_at', { ascending: true }).limit(500); if (error) return res.status(500).json({ error: error.message }); const messages = await Promise.all((data || []).map(async row => ({ ...row, media_url: row.media_path ? await signedMedia(row.media_path) : null }))); res.json({ thread, messages }); });
 app.post('/api/threads/:id/send', requireUser, upload.single('file'), async (req, res) => {
   if (!waReady) return res.status(409).json({ error: 'WhatsApp não está conectado.' });
