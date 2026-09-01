@@ -127,8 +127,8 @@ app.get('/', (_req, res) => {
 });
 
 app.get('/erp', (_req, res) => res.redirect('/erp/'));
-app.get('/erp/*', proxyERP);
 app.get('/erp/', proxyERP);
+app.get('/erp/*asset', proxyERP);
 
 app.get('/status', (_req, res) => res.json({ state, message, account, error: lastError, localERP: `${LOCAL_ORIGIN}/erp/` }));
 app.get('/qr', async (_req, res) => {
