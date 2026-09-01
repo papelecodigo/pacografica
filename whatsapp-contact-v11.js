@@ -9,7 +9,7 @@ const loading=new Set();
 
 function addCss(){
   if(document.querySelector('link[data-wa-contact-v11]'))return;
-  const l=document.createElement('link');l.rel='stylesheet';l.href='./whatsapp-contact-v11.css?build=20260901-1400';l.dataset.waContactV11='1';document.head.appendChild(l);
+  const l=document.createElement('link');l.rel='stylesheet';l.href='./whatsapp-contact-v11.css?build=20260901-1405';l.dataset.waContactV11='1';document.head.appendChild(l);
 }
 async function getSession(){const {data}=await supabase.auth.getSession();return data.session||null}
 async function getApiBase(){
@@ -34,16 +34,32 @@ function formatPhone(value){
 }
 function initial(name){return String(name||'?').trim().slice(0,1).toUpperCase()||'?'}
 function avatarHtml(name,url){return url?`<img src="${esc(url)}" alt="${esc(name||'Contato')}" referrerpolicy="no-referrer">`:`<span>${esc(initial(name))}</span>`}
+function onlyDigits(v){return String(v||'').replace(/\D/g,'')}
+function isProvisional(data){
+  if(!data)return true;
+  const name=String(data.name||data.customer_name||'').trim();
+  const phone=onlyDigits(data.phone);
+  const nameDigits=onlyDigits(name);
+  const nameLooksId=Boolean(name)&&nameDigits===name.replace(/\D/g,'')&&nameDigits.length>=13;
+  const phoneLooksId=phone.length>=13&&!phone.startsWith('55');
+  return !name||nameLooksId||phoneLooksId;
+}
 
 async function identity(threadId){
-  if(cache.has(threadId))return cache.get(threadId);
-  if(loading.has(threadId))return null;
+  const cached=cache.get(threadId);
+  if(cached){
+    const ttl=cached.provisional?4000:5*60*1000;
+    if(Date.now()-cached.at<ttl)return cached.data;
+    cache.delete(threadId);
+  }
+  if(loading.has(threadId))return cached?.data||null;
   loading.add(threadId);
   try{
     const d=await api(`/api/threads/${threadId}/identity`);
     const value={...(d.thread||{}),...(d.identity||{}),profilePicUrl:d.identity?.profilePicUrl||null};
-    cache.set(threadId,value);return value;
-  }catch(e){console.warn('[WhatsApp contato]',e.message);return null}
+    cache.set(threadId,{data:value,at:Date.now(),provisional:isProvisional(value)});
+    return value;
+  }catch(e){console.warn('[WhatsApp contato]',e.message);return cached?.data||null}
   finally{loading.delete(threadId)}
 }
 function ensurePhoneLine(button){
@@ -94,13 +110,13 @@ function bindClicks(){
   document.addEventListener('click',e=>{
     const b=e.target.closest?.('.wa-thread[data-thread]');if(!b)return;
     const id=b.dataset.thread;
-    setTimeout(async()=>{const data=cache.get(id)||await identity(id);applyActive(id,data)},80);
+    setTimeout(async()=>{const entry=cache.get(id);const data=entry?.data||await identity(id);applyActive(id,data)},80);
   },true);
 }
 function observe(){
   const mo=new MutationObserver(()=>scan());
   mo.observe(document.body,{childList:true,subtree:true});
-  setInterval(()=>{if($('section-inbox')?.classList.contains('active'))scan()},10000);
+  setInterval(()=>{if($('section-inbox')?.classList.contains('active'))scan()},5000);
 }
 
 addCss();bindClicks();observe();
