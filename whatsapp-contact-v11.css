@@ -1,0 +1,9 @@
+.wa-thread-photo-v11{overflow:hidden;padding:0!important;background:#eef3f8!important;display:grid!important;place-items:center!important}
+.wa-thread-photo-v11 img,.wa-thread-photo-v11 span{width:100%;height:100%;display:grid;place-items:center;object-fit:cover;border-radius:inherit}
+.wa-thread-photo-v11 span{font-weight:800;color:#456078;background:#eef3f8}
+.wa-contact-phone-v11{display:block;margin-top:2px;font-size:11px;line-height:1.25;color:#718297;font-style:normal;letter-spacing:.01em}
+.wa-chat-person-v11{display:grid!important;grid-template-columns:42px 1fr;grid-template-rows:auto auto;column-gap:10px;align-items:center}
+.wa-chat-person-v11>.wa-chat-photo-v11{grid-row:1/3;width:42px;height:42px;border-radius:50%;overflow:hidden;background:#edf2f7;display:grid;place-items:center;font-weight:800;color:#456078}
+.wa-chat-person-v11>strong{grid-column:2}.wa-chat-person-v11>span:not(.wa-chat-photo-v11){grid-column:2}
+.wa-chat-photo-v11 img,.wa-chat-photo-v11 span,.wa-info-photo-v11 img,.wa-info-photo-v11 span{width:100%;height:100%;object-fit:cover;border-radius:50%;display:grid;place-items:center}
+.wa-info-photo-v11{width:58px;height:58px;border-radius:50%;overflow:hidden;background:#edf2f7;display:grid;place-items:center;margin:6px 0 10px;font-size:20px;font-weight:800;color:#456078}
