@@ -10,15 +10,16 @@ const TUNNEL_EXE = path.join(ROOT, 'cloudflared.exe');
 const SESSION_PATH = path.join(ROOT, 'session');
 const LOCAL_URL = 'http://127.0.0.1:3031';
 const ERP_URL = 'https://papelecodigo.github.io/pacografica/';
+const DEFAULT_SUPABASE_URL = 'https://vvdrhzupgwveajmhssll.supabase.co';
 
 function fail(message) {
   console.error('\n[ERRO]', message);
   process.exit(1);
 }
 
-if (!fs.existsSync(CONFIG_PATH)) fail('Configuração ausente. Execute iniciar-whatsapp-free.bat novamente.');
-if (!fs.existsSync(SERVER_PATH)) fail('server.js ausente. Execute iniciar-whatsapp-free.bat novamente.');
-if (!fs.existsSync(TUNNEL_EXE)) fail('cloudflared.exe ausente. Execute iniciar-whatsapp-free.bat novamente.');
+if (!fs.existsSync(CONFIG_PATH)) fail('Configuração ausente. Execute o instalador novamente.');
+if (!fs.existsSync(SERVER_PATH)) fail('server.js ausente. Execute o instalador novamente.');
+if (!fs.existsSync(TUNNEL_EXE)) fail('cloudflared.exe ausente. Execute o instalador novamente.');
 
 let config;
 try {
@@ -27,10 +28,38 @@ try {
   fail('Não foi possível ler config.local.json. Exclua o arquivo e execute o instalador novamente.');
 }
 
-const SUPABASE_URL = String(config.supabaseUrl || '').trim().replace(/\/$/, '');
+function normalizeSupabaseUrl(value) {
+  let raw = String(value || '').trim();
+  raw = raw.replace(/^["']+|["']+$/g, '').trim();
+  if (!raw) return DEFAULT_SUPABASE_URL;
+
+  try {
+    const u = new URL(raw);
+    if (/^[a-z0-9-]+\.supabase\.co$/i.test(u.hostname)) return `https://${u.hostname}`;
+  } catch {}
+
+  const dashboardRef = raw.match(/(?:dashboard\/project\/|project\/)([a-z0-9]{15,40})/i);
+  if (dashboardRef) return `https://${dashboardRef[1]}.supabase.co`;
+
+  const directRef = raw.match(/([a-z0-9]{15,40})\.supabase\.co/i);
+  if (directRef) return `https://${directRef[1]}.supabase.co`;
+
+  if (/^[a-z0-9]{15,40}$/i.test(raw)) return `https://${raw}.supabase.co`;
+
+  // Este launcher pertence ao ERP Papel e Código e conhece o projeto já configurado no front.
+  console.warn('[Configuração] Project URL salva não foi reconhecida. Usando a URL do Supabase configurada no ERP.');
+  return DEFAULT_SUPABASE_URL;
+}
+
+const SUPABASE_URL = normalizeSupabaseUrl(config.supabaseUrl);
 const SUPABASE_SECRET = String(config.supabaseSecret || '').trim();
-if (!/^https:\/\/.+\.supabase\.co$/i.test(SUPABASE_URL)) fail('Project URL do Supabase inválida.');
+if (!/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(SUPABASE_URL)) fail('Project URL do Supabase inválida.');
 if (!SUPABASE_SECRET) fail('Secret Key do Supabase não informada.');
+
+if (config.supabaseUrl !== SUPABASE_URL) {
+  config.supabaseUrl = SUPABASE_URL;
+  try { fs.writeFileSync(CONFIG_PATH, JSON.stringify(config, null, 2), 'utf8'); } catch {}
+}
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SECRET, {
   auth: { persistSession: false, autoRefreshToken: false }
