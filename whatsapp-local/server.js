@@ -7,6 +7,7 @@ const { Client, LocalAuth } = require('whatsapp-web.js');
 const HOST = '127.0.0.1';
 const PORT = 3031;
 const LOCAL_ORIGIN = `http://${HOST}:${PORT}`;
+const LOCAL_ERP_PATH = '/sistema/';
 const REMOTE_ERP = 'https://papelecodigo.github.io/pacografica/';
 const ALLOWED_ORIGINS = new Set([
   'https://papelecodigo.github.io',
@@ -61,15 +62,14 @@ function openBrowser(url) {
 
 async function proxyERP(req, res) {
   try {
-    const pathname = req.originalUrl.split('?')[0];
-    const relative = pathname.replace(/^\/erp\/?/, '');
+    const relative = req.path.replace(/^\/sistema\/?/, '');
     const target = new URL(relative || '', REMOTE_ERP);
     const queryIndex = req.originalUrl.indexOf('?');
     if (queryIndex >= 0) target.search = req.originalUrl.slice(queryIndex);
 
     const response = await fetch(target, {
       redirect: 'follow',
-      headers: { 'User-Agent': 'PapelECodigo-ERP-Local/1.0' }
+      headers: { 'User-Agent': 'PapelECodigo-ERP-Local/1.1' }
     });
 
     res.status(response.status);
@@ -82,7 +82,7 @@ async function proxyERP(req, res) {
     res.send(body);
   } catch (error) {
     console.error('[ERP local] Falha ao carregar arquivo:', error);
-    res.status(502).type('html').send(`<!doctype html><meta charset="utf-8"><title>ERP local</title><style>body{font:16px system-ui;padding:40px;color:#132238}main{max-width:620px;margin:auto}button{padding:12px 18px}</style><main><h1>Não foi possível carregar o ERP</h1><p>Verifique sua internet e mantenha o conector aberto.</p><button onclick="location.reload()">Tentar novamente</button></main>`);
+    res.status(502).type('html').send(`<!doctype html><meta charset="utf-8"><title>Sistema local</title><style>body{font:16px system-ui;padding:40px;color:#132238}main{max-width:620px;margin:auto}button{padding:12px 18px}</style><main><h1>Não foi possível carregar o sistema</h1><p>Verifique sua internet e mantenha o conector aberto.</p><button onclick="location.reload()">Tentar novamente</button></main>`);
   }
 }
 
@@ -90,7 +90,7 @@ client.on('qr', qr => {
   qrRaw = qr;
   state = 'qr';
   message = 'Escaneie o QR Code no WhatsApp.';
-  console.log('[WhatsApp] QR gerado. O ERP local mostrará o código para escanear.');
+  console.log('[WhatsApp] QR gerado. O sistema local mostrará o código para escanear.');
 });
 client.on('authenticated', () => {
   state = 'starting';
@@ -124,13 +124,13 @@ client.on('disconnected', reason => {
 });
 
 app.get('/', (_req, res) => {
-  res.type('html').send(`<!doctype html><html lang="pt-BR"><meta charset="utf-8"><title>Papel e Código · WhatsApp local</title><style>body{font:16px system-ui;background:#07182d;color:#fff;margin:0;padding:40px}main{max-width:680px;margin:auto;background:#10243e;padding:28px;border-radius:18px}b{color:#dff01f}.ok{color:#56d39a}a{display:inline-block;background:#1677ff;color:white;text-decoration:none;padding:12px 18px;border-radius:10px;font-weight:700}</style><main><h1>Papel e Código</h1><h2>Conector local do WhatsApp</h2><p>Estado atual: <b>${state}</b></p><p>${message}</p><p class="ok">Mantenha esta janela do conector aberta enquanto estiver usando o ERP.</p><a href="/erp/">Abrir ERP local</a></main></html>`);
+  res.type('html').send(`<!doctype html><html lang="pt-BR"><meta charset="utf-8"><title>Papel e Código · WhatsApp local</title><style>body{font:16px system-ui;background:#07182d;color:#fff;margin:0;padding:40px}main{max-width:680px;margin:auto;background:#10243e;padding:28px;border-radius:18px}b{color:#dff01f}.ok{color:#56d39a}a{display:inline-block;background:#1677ff;color:white;text-decoration:none;padding:12px 18px;border-radius:10px;font-weight:700}</style><main><h1>Papel e Código</h1><h2>Conector local do WhatsApp</h2><p>Estado atual: <b>${state}</b></p><p>${message}</p><p class="ok">Mantenha esta janela do conector aberta enquanto estiver usando o sistema.</p><a href="${LOCAL_ERP_PATH}">Abrir sistema local</a></main></html>`);
 });
 
-// Uma única rota montada evita o loop /erp <-> /erp/ no Express.
-app.use('/erp', proxyERP);
+app.get(['/sistema', '/sistema/'], proxyERP);
+app.get('/sistema/*asset', proxyERP);
 
-app.get('/status', (_req, res) => res.json({ state, message, account, error: lastError, localERP: `${LOCAL_ORIGIN}/erp/` }));
+app.get('/status', (_req, res) => res.json({ state, message, account, error: lastError, localERP: `${LOCAL_ORIGIN}${LOCAL_ERP_PATH}`, version: '1.1.0' }));
 app.get('/qr', async (_req, res) => {
   if (!qrRaw) return res.json({ state, dataUrl: null });
   try {
@@ -185,11 +185,11 @@ app.post('/logout', async (_req, res) => {
 });
 
 app.listen(PORT, HOST, () => {
-  console.log(`\nPapel e Código · WhatsApp local`);
+  console.log(`\nPapel e Código · WhatsApp local v1.1.0`);
   console.log(`Conector: ${LOCAL_ORIGIN}`);
-  console.log(`ERP local: ${LOCAL_ORIGIN}/erp/`);
+  console.log(`Sistema local: ${LOCAL_ORIGIN}${LOCAL_ERP_PATH}`);
   console.log('Mantenha esta janela aberta durante o uso.\n');
-  setTimeout(() => openBrowser(`${LOCAL_ORIGIN}/erp/`), 1200);
+  setTimeout(() => openBrowser(`${LOCAL_ORIGIN}${LOCAL_ERP_PATH}`), 1200);
   client.initialize().catch(error => {
     state = 'error';
     lastError = String(error);
