@@ -3,6 +3,56 @@ import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config.js';
 
 export const supabase=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 
+// A autenticação continua pertencendo ao usuário que fez login, mas o ERP trabalha
+// com o user_id do dono da empresa. Assim integrantes da equipe podem usar contas
+// próprias e compartilhar os mesmos dados sem compartilhar senha.
+async function resolveWorkspaceSession(session){
+  if(!session?.user?.id||!session.access_token)return session;
+  const authUserId=session.user.id;
+  try{
+    const url=new URL(`${SUPABASE_URL}/rest/v1/team_members`);
+    url.searchParams.set('select','owner_user_id,role,display_name');
+    url.searchParams.set('member_user_id',`eq.${authUserId}`);
+    url.searchParams.set('active','eq.true');
+    url.searchParams.set('limit','1');
+    const r=await fetch(url,{headers:{apikey:SUPABASE_ANON_KEY,Authorization:`Bearer ${session.access_token}`},cache:'no-store'});
+    if(r.ok){
+      const rows=await r.json();
+      const member=rows?.[0];
+      if(member?.owner_user_id){
+        const effectiveUser={
+          ...session.user,
+          id:member.owner_user_id,
+          auth_user_id:authUserId,
+          workspace_owner_id:member.owner_user_id,
+          workspace_role:member.role||'attendant',
+          workspace_name:member.display_name||null
+        };
+        return {...session,user:effectiveUser};
+      }
+    }
+  }catch(error){console.warn('Workspace:',error)}
+  return {...session,user:{...session.user,auth_user_id:authUserId,workspace_owner_id:authUserId,workspace_role:'owner'}};
+}
+
+const rawSignIn=supabase.auth.signInWithPassword.bind(supabase.auth);
+supabase.auth.signInWithPassword=async credentials=>{
+  const result=await rawSignIn(credentials);
+  if(result?.data?.session){
+    const session=await resolveWorkspaceSession(result.data.session);
+    result.data.session=session;
+    result.data.user=session.user;
+  }
+  return result;
+};
+
+const rawGetSession=supabase.auth.getSession.bind(supabase.auth);
+supabase.auth.getSession=async()=>{
+  const result=await rawGetSession();
+  if(result?.data?.session)result.data.session=await resolveWorkspaceSession(result.data.session);
+  return result;
+};
+
 const ERP_TABLES=new Set(['customers','products','quotes','quote_items','orders','order_items','production_steps','tasks','art_approvals','suppliers','stock_items','stock_movements','purchase_requests','receivables','payables','automation_rules','audit_logs']);
 
 const uuid=()=>crypto.randomUUID?.()||`${Date.now()}-${Math.random().toString(16).slice(2)}`;
