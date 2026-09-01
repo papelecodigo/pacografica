@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const QRCode = require('qrcode');
+const fs = require('fs');
+const path = require('path');
 const { exec } = require('child_process');
 const { Client, LocalAuth } = require('whatsapp-web.js');
 
@@ -22,6 +24,44 @@ let account = null;
 let lastError = null;
 let openedLocalERP = false;
 
+function findInstalledBrowser() {
+  const candidates = [];
+  if (process.platform === 'win32') {
+    const local = process.env.LOCALAPPDATA || '';
+    const pf = process.env.PROGRAMFILES || 'C:\\Program Files';
+    const pfx86 = process.env['PROGRAMFILES(X86)'] || 'C:\\Program Files (x86)';
+    candidates.push(
+      path.join(pf, 'Google', 'Chrome', 'Application', 'chrome.exe'),
+      path.join(pfx86, 'Google', 'Chrome', 'Application', 'chrome.exe'),
+      path.join(local, 'Google', 'Chrome', 'Application', 'chrome.exe'),
+      path.join(pf, 'Microsoft', 'Edge', 'Application', 'msedge.exe'),
+      path.join(pfx86, 'Microsoft', 'Edge', 'Application', 'msedge.exe'),
+      path.join(local, 'Microsoft', 'Edge', 'Application', 'msedge.exe'),
+      path.join(pf, 'BraveSoftware', 'Brave-Browser', 'Application', 'brave.exe'),
+      path.join(pfx86, 'BraveSoftware', 'Brave-Browser', 'Application', 'brave.exe'),
+      path.join(local, 'BraveSoftware', 'Brave-Browser', 'Application', 'brave.exe')
+    );
+  } else if (process.platform === 'darwin') {
+    candidates.push(
+      '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+      '/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge',
+      '/Applications/Brave Browser.app/Contents/MacOS/Brave Browser'
+    );
+  } else {
+    candidates.push(
+      '/usr/bin/google-chrome',
+      '/usr/bin/google-chrome-stable',
+      '/usr/bin/chromium',
+      '/usr/bin/chromium-browser',
+      '/usr/bin/microsoft-edge',
+      '/usr/bin/brave-browser'
+    );
+  }
+  return candidates.find(file => file && fs.existsSync(file)) || null;
+}
+
+const browserExecutable = findInstalledBrowser();
+
 const app = express();
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Private-Network', 'true');
@@ -40,12 +80,22 @@ app.use(cors({
 }));
 app.use(express.json());
 
+const puppeteerOptions = {
+  headless: true,
+  args: [
+    '--no-sandbox',
+    '--disable-setuid-sandbox',
+    '--disable-dev-shm-usage',
+    '--disable-gpu',
+    '--no-first-run',
+    '--no-default-browser-check'
+  ]
+};
+if (browserExecutable) puppeteerOptions.executablePath = browserExecutable;
+
 const client = new Client({
   authStrategy: new LocalAuth({ clientId: 'papel-e-codigo' }),
-  puppeteer: {
-    headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
-  }
+  puppeteer: puppeteerOptions
 });
 
 function openBrowser(url) {
@@ -56,7 +106,7 @@ function openBrowser(url) {
     else if (process.platform === 'darwin') exec(`open "${url}"`);
     else exec(`xdg-open "${url}"`);
   } catch (error) {
-    console.warn('[ERP local] Não foi possível abrir o navegador automaticamente:', error.message);
+    console.warn('[Sistema local] Não foi possível abrir o navegador automaticamente:', error.message);
   }
 }
 
@@ -69,7 +119,7 @@ async function proxyERP(req, res) {
 
     const response = await fetch(target, {
       redirect: 'follow',
-      headers: { 'User-Agent': 'PapelECodigo-ERP-Local/1.1' }
+      headers: { 'User-Agent': 'PapelECodigo-ERP-Local/1.2' }
     });
 
     res.status(response.status);
@@ -81,7 +131,7 @@ async function proxyERP(req, res) {
     const body = Buffer.from(await response.arrayBuffer());
     res.send(body);
   } catch (error) {
-    console.error('[ERP local] Falha ao carregar arquivo:', error);
+    console.error('[Sistema local] Falha ao carregar arquivo:', error);
     res.status(502).type('html').send(`<!doctype html><meta charset="utf-8"><title>Sistema local</title><style>body{font:16px system-ui;padding:40px;color:#132238}main{max-width:620px;margin:auto}button{padding:12px 18px}</style><main><h1>Não foi possível carregar o sistema</h1><p>Verifique sua internet e mantenha o conector aberto.</p><button onclick="location.reload()">Tentar novamente</button></main>`);
   }
 }
@@ -90,16 +140,19 @@ client.on('qr', qr => {
   qrRaw = qr;
   state = 'qr';
   message = 'Escaneie o QR Code no WhatsApp.';
+  lastError = null;
   console.log('[WhatsApp] QR gerado. O sistema local mostrará o código para escanear.');
 });
 client.on('authenticated', () => {
   state = 'starting';
   message = 'Autenticado. Carregando conversas...';
+  lastError = null;
   console.log('[WhatsApp] Autenticado.');
 });
 client.on('ready', async () => {
   state = 'ready';
   qrRaw = null;
+  lastError = null;
   message = 'WhatsApp conectado.';
   try {
     const info = client.info;
@@ -124,13 +177,21 @@ client.on('disconnected', reason => {
 });
 
 app.get('/', (_req, res) => {
-  res.type('html').send(`<!doctype html><html lang="pt-BR"><meta charset="utf-8"><title>Papel e Código · WhatsApp local</title><style>body{font:16px system-ui;background:#07182d;color:#fff;margin:0;padding:40px}main{max-width:680px;margin:auto;background:#10243e;padding:28px;border-radius:18px}b{color:#dff01f}.ok{color:#56d39a}a{display:inline-block;background:#1677ff;color:white;text-decoration:none;padding:12px 18px;border-radius:10px;font-weight:700}</style><main><h1>Papel e Código</h1><h2>Conector local do WhatsApp</h2><p>Estado atual: <b>${state}</b></p><p>${message}</p><p class="ok">Mantenha esta janela do conector aberta enquanto estiver usando o sistema.</p><a href="${LOCAL_ERP_PATH}">Abrir sistema local</a></main></html>`);
+  res.type('html').send(`<!doctype html><html lang="pt-BR"><meta charset="utf-8"><title>Papel e Código · WhatsApp local</title><style>body{font:16px system-ui;background:#07182d;color:#fff;margin:0;padding:40px}main{max-width:680px;margin:auto;background:#10243e;padding:28px;border-radius:18px}b{color:#dff01f}.ok{color:#56d39a}.muted{color:#a9bad0;font-size:13px}a{display:inline-block;background:#1677ff;color:white;text-decoration:none;padding:12px 18px;border-radius:10px;font-weight:700}</style><main><h1>Papel e Código</h1><h2>Conector local do WhatsApp</h2><p>Estado atual: <b>${state}</b></p><p>${message}</p><p class="muted">Navegador detectado: ${browserExecutable || 'nenhum Chrome/Edge encontrado'}</p><p class="ok">Mantenha esta janela do conector aberta enquanto estiver usando o sistema.</p><a href="${LOCAL_ERP_PATH}">Abrir sistema local</a></main></html>`);
 });
 
 app.get(['/sistema', '/sistema/'], proxyERP);
 app.get('/sistema/*asset', proxyERP);
 
-app.get('/status', (_req, res) => res.json({ state, message, account, error: lastError, localERP: `${LOCAL_ORIGIN}${LOCAL_ERP_PATH}`, version: '1.1.0' }));
+app.get('/status', (_req, res) => res.json({
+  state,
+  message,
+  account,
+  error: lastError,
+  browserExecutable,
+  localERP: `${LOCAL_ORIGIN}${LOCAL_ERP_PATH}`,
+  version: '1.2.0'
+}));
 app.get('/qr', async (_req, res) => {
   if (!qrRaw) return res.json({ state, dataUrl: null });
   try {
@@ -185,15 +246,19 @@ app.post('/logout', async (_req, res) => {
 });
 
 app.listen(PORT, HOST, () => {
-  console.log(`\nPapel e Código · WhatsApp local v1.1.0`);
+  console.log(`\nPapel e Código · WhatsApp local v1.2.0`);
   console.log(`Conector: ${LOCAL_ORIGIN}`);
   console.log(`Sistema local: ${LOCAL_ORIGIN}${LOCAL_ERP_PATH}`);
+  console.log(`Navegador usado pelo WhatsApp: ${browserExecutable || 'Puppeteer padrão (nenhum Chrome/Edge encontrado)'}`);
   console.log('Mantenha esta janela aberta durante o uso.\n');
   setTimeout(() => openBrowser(`${LOCAL_ORIGIN}${LOCAL_ERP_PATH}`), 1200);
   client.initialize().catch(error => {
     state = 'error';
-    lastError = String(error);
+    lastError = error?.stack || String(error);
     message = 'Erro ao iniciar o WhatsApp Web.';
     console.error('[WhatsApp] Erro ao iniciar:', error);
+    if (!browserExecutable) {
+      console.error('[WhatsApp] Nenhum Chrome/Edge instalado foi encontrado. Instale o Google Chrome ou Microsoft Edge e reinicie.');
+    }
   });
 });
