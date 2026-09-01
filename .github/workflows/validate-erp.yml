@@ -22,6 +22,7 @@ jobs:
           node --check sale-flow-v8.js
           node --check sale-checklist-v10.js
           node --check whatsapp-online-v10.js
+          node --check whatsapp-contact-v11.js
           node --check team-online-v10.js
           node --check whatsapp-cloud/server.js
           node --check whatsapp-free/launcher.js
@@ -42,6 +43,8 @@ jobs:
           test -s sale-checklist-v10.css
           test -s whatsapp-online-v10.js
           test -s whatsapp-online-v10.css
+          test -s whatsapp-contact-v11.js
+          test -s whatsapp-contact-v11.css
           test -s team-online-v10.js
           test -s team-online-v10.css
           test -s whatsapp-cloud/server.js
@@ -63,6 +66,7 @@ jobs:
           grep -q 'sale-flow-v8.js' config.js
           grep -q 'sale-checklist-v10.js' config.js
           grep -q 'whatsapp-online-v10.js' config.js
+          grep -q 'whatsapp-contact-v11.js' config.js
           grep -q 'team-online-v10.js' config.js
           grep -q 'section-dashboard' index.html
           grep -q 'section-customers' index.html
