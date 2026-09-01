@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: papel-e-codigo-whatsapp
+    runtime: docker
+    plan: 0.5c-512mb
+    dockerfilePath: ./whatsapp-cloud/Dockerfile
+    dockerContext: ./whatsapp-cloud
+    healthCheckPath: /health
+    numInstances: 1
+    envVars:
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: PACO_OWNER_USER_ID
+        sync: false
+      - key: APP_ORIGINS
+        value: https://papelecodigo.github.io
+      - key: CHROME_PATH
+        value: /usr/bin/chromium
+      - key: WA_AUTH_PATH
+        value: /var/data/whatsapp-auth
+    disk:
+      name: whatsapp-session
+      mountPath: /var/data
+      sizeGB: 1
