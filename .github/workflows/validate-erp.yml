@@ -22,6 +22,7 @@ jobs:
           node --check sale-flow-v8.js
           node --check sale-checklist-v10.js
           node --check whatsapp-online-v10.js
+          node --check team-online-v10.js
           node --check whatsapp-cloud/server.js
       - name: Check required files
         run: |
@@ -40,12 +41,15 @@ jobs:
           test -s sale-checklist-v10.css
           test -s whatsapp-online-v10.js
           test -s whatsapp-online-v10.css
+          test -s team-online-v10.js
+          test -s team-online-v10.css
           test -s whatsapp-cloud/server.js
           test -s whatsapp-cloud/package.json
           test -s whatsapp-cloud/Dockerfile
           test -s render.yaml
           test -s migration-v5-complete.sql
           test -s migration-v10-whatsapp-online.sql
+          test -s migration-v10b-team-fix.sql
           grep -q 'erp-v5.js' index.html
           grep -q 'erp-v5.css' index.html
           grep -q 'quick-ops.js' config.js
@@ -53,6 +57,7 @@ jobs:
           grep -q 'sale-flow-v8.js' config.js
           grep -q 'sale-checklist-v10.js' config.js
           grep -q 'whatsapp-online-v10.js' config.js
+          grep -q 'team-online-v10.js' config.js
           grep -q 'section-dashboard' index.html
           grep -q 'section-customers' index.html
           grep -q 'section-quotes' index.html
