@@ -20,6 +20,8 @@ jobs:
           node --check quick-ops.js
           node --check focus-v6.js
           node --check sale-flow-v8.js
+          node --check checklist-whatsapp-v9.js
+          node --check whatsapp-local/server.js
       - name: Check required front files
         run: |
           test -s index.html
@@ -33,12 +35,18 @@ jobs:
           test -s focus-v6.css
           test -s sale-flow-v7.css
           test -s sale-flow-v8.js
+          test -s checklist-whatsapp-v9.js
+          test -s checklist-whatsapp-v9.css
+          test -s whatsapp-local/server.js
+          test -s whatsapp-local/package.json
+          test -s whatsapp-local/iniciar-whatsapp.bat
           test -s migration-v5-complete.sql
           grep -q 'erp-v5.js' index.html
           grep -q 'erp-v5.css' index.html
           grep -q 'quick-ops.js' config.js
           grep -q 'focus-v6.js' config.js
           grep -q 'sale-flow-v8.js' config.js
+          grep -q 'checklist-whatsapp-v9.js' config.js
           grep -q 'section-dashboard' index.html
           grep -q 'section-customers' index.html
           grep -q 'section-quotes' index.html
