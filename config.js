@@ -14,7 +14,7 @@ if (typeof window !== 'undefined') {
       await import('./sale-flow-v8.js?build=20260901-1100');
       await import('./sale-checklist-v10.js?build=20260901-1200');
       await import('./whatsapp-online-v10.js?build=20260901-1210');
-      await import('./whatsapp-contact-v11.js?build=20260901-1400');
+      await import('./whatsapp-contact-v11.js?build=20260901-1405');
       await import('./team-online-v10.js?build=20260901-1230');
     } catch (error) {
       console.error('Erro ao carregar camadas operacionais:', error);
