@@ -24,6 +24,7 @@ jobs:
           node --check whatsapp-online-v10.js
           node --check team-online-v10.js
           node --check whatsapp-cloud/server.js
+          node --check whatsapp-free/launcher.js
       - name: Check required files
         run: |
           test -s index.html
@@ -46,6 +47,11 @@ jobs:
           test -s whatsapp-cloud/server.js
           test -s whatsapp-cloud/package.json
           test -s whatsapp-cloud/Dockerfile
+          test -s whatsapp-free/package.json
+          test -s whatsapp-free/launcher.js
+          test -s whatsapp-free/configurar.ps1
+          test -s whatsapp-free/iniciar-whatsapp-free.bat
+          test -s whatsapp-free/README.md
           test -s render.yaml
           test -s migration-v5-complete.sql
           test -s migration-v10-whatsapp-online.sql
