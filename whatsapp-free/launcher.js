@@ -29,33 +29,24 @@ try {
 }
 
 function normalizeSupabaseUrl(value) {
-  let raw = String(value || '').trim();
-  raw = raw.replace(/^["']+|["']+$/g, '').trim();
+  let raw = String(value || '').trim().replace(/^["']+|["']+$/g, '').trim();
   if (!raw) return DEFAULT_SUPABASE_URL;
-
   try {
     const u = new URL(raw);
     if (/^[a-z0-9-]+\.supabase\.co$/i.test(u.hostname)) return `https://${u.hostname}`;
   } catch {}
-
   const dashboardRef = raw.match(/(?:dashboard\/project\/|project\/)([a-z0-9]{15,40})/i);
   if (dashboardRef) return `https://${dashboardRef[1]}.supabase.co`;
-
   const directRef = raw.match(/([a-z0-9]{15,40})\.supabase\.co/i);
   if (directRef) return `https://${directRef[1]}.supabase.co`;
-
   if (/^[a-z0-9]{15,40}$/i.test(raw)) return `https://${raw}.supabase.co`;
-
-  // Este launcher pertence ao ERP Papel e Código e conhece o projeto já configurado no front.
   console.warn('[Configuração] Project URL salva não foi reconhecida. Usando a URL do Supabase configurada no ERP.');
   return DEFAULT_SUPABASE_URL;
 }
 
 const SUPABASE_URL = normalizeSupabaseUrl(config.supabaseUrl);
 const SUPABASE_SECRET = String(config.supabaseSecret || '').trim();
-if (!/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(SUPABASE_URL)) fail('Project URL do Supabase inválida.');
 if (!SUPABASE_SECRET) fail('Secret Key do Supabase não informada.');
-
 if (config.supabaseUrl !== SUPABASE_URL) {
   config.supabaseUrl = SUPABASE_URL;
   try { fs.writeFileSync(CONFIG_PATH, JSON.stringify(config, null, 2), 'utf8'); } catch {}
@@ -84,34 +75,16 @@ function detectBrowser() {
 
 async function resolveOwner() {
   if (config.ownerUserId) return String(config.ownerUserId);
-  const { data, error } = await supabase
-    .from('company_settings')
-    .select('user_id,trade_name')
-    .limit(5);
+  const { data, error } = await supabase.from('company_settings').select('user_id,trade_name').limit(5);
   if (error) throw new Error(`Falha ao localizar a empresa no Supabase: ${error.message}`);
   const rows = data || [];
   if (rows.length === 1) return rows[0].user_id;
-  if (rows.length === 0) throw new Error('Nenhuma empresa encontrada em company_settings. Entre no ERP uma vez e salve as configurações da empresa.');
+  if (rows.length === 0) throw new Error('Nenhuma empresa encontrada em company_settings.');
   throw new Error('Há mais de uma empresa em company_settings. Informe ownerUserId manualmente em config.local.json.');
 }
 
-function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
-
-async function waitForServer(timeoutMs = 45000) {
-  const start = Date.now();
-  while (Date.now() - start < timeoutMs) {
-    try {
-      const r = await fetch(`${LOCAL_URL}/health`);
-      if (r.ok) return true;
-    } catch {}
-    await wait(1000);
-  }
-  throw new Error('O servidor local não iniciou em até 45 segundos.');
-}
-
 async function savePublicUrl(ownerUserId, publicUrl) {
-  const { error } = await supabase
-    .from('company_settings')
+  const { error } = await supabase.from('company_settings')
     .update({ whatsapp_api_url: publicUrl, updated_at: new Date().toISOString() })
     .eq('user_id', ownerUserId);
   if (error) throw new Error(`Não foi possível salvar o endereço do WhatsApp no Supabase: ${error.message}`);
@@ -128,9 +101,11 @@ let stopping = false;
 let serverProcess = null;
 let tunnelProcess = null;
 let currentPublicUrl = '';
+let tunnelRestartTimer = null;
 
 function stopAll() {
   stopping = true;
+  if (tunnelRestartTimer) clearTimeout(tunnelRestartTimer);
   try { tunnelProcess?.kill(); } catch {}
   try { serverProcess?.kill(); } catch {}
 }
@@ -144,6 +119,9 @@ async function main() {
   const browserPath = detectBrowser();
   if (!browserPath) throw new Error('Google Chrome ou Microsoft Edge não foi encontrado neste computador.');
   fs.mkdirSync(SESSION_PATH, { recursive: true });
+
+  config.ownerUserId = ownerUserId;
+  try { fs.writeFileSync(CONFIG_PATH, JSON.stringify(config, null, 2), 'utf8'); } catch {}
 
   console.log('============================================================');
   console.log(' PAPEL E CÓDIGO · WHATSAPP ONLINE FREE');
@@ -179,9 +157,6 @@ async function main() {
     }
   });
 
-  await waitForServer();
-  console.log('\n[Servidor] local pronto em', LOCAL_URL);
-
   const startTunnel = () => {
     if (stopping) return;
     console.log('[Cloudflare] criando túnel HTTPS gratuito...');
@@ -192,6 +167,7 @@ async function main() {
     });
 
     let buffer = '';
+    let published = false;
     const consume = async chunk => {
       const text = String(chunk);
       buffer += text;
@@ -201,6 +177,7 @@ async function main() {
         currentPublicUrl = match[0];
         try {
           await savePublicUrl(ownerUserId, currentPublicUrl);
+          published = true;
           console.log('\n============================================================');
           console.log(' CONECTOR ONLINE');
           console.log(' Endereço:', currentPublicUrl);
@@ -220,10 +197,17 @@ async function main() {
     tunnelProcess.on('exit', code => {
       if (stopping) return;
       console.warn(`[Cloudflare] túnel encerrado (${code}). Tentando reconectar em 5 segundos...`);
-      setTimeout(startTunnel, 5000);
+      tunnelRestartTimer = setTimeout(startTunnel, 5000);
     });
+
+    setTimeout(() => {
+      if (!stopping && !published && tunnelProcess && !tunnelProcess.killed) {
+        console.log('[Cloudflare] aguardando geração do endereço público...');
+      }
+    }, 8000);
   };
 
+  // O túnel sobe imediatamente. Ele pode aguardar o servidor local ficar pronto sozinho.
   startTunnel();
 }
 
