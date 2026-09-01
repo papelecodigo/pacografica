@@ -61,7 +61,8 @@ function openBrowser(url) {
 
 async function proxyERP(req, res) {
   try {
-    const relative = req.path.replace(/^\/erp\/?/, '');
+    const pathname = req.originalUrl.split('?')[0];
+    const relative = pathname.replace(/^\/erp\/?/, '');
     const target = new URL(relative || '', REMOTE_ERP);
     const queryIndex = req.originalUrl.indexOf('?');
     if (queryIndex >= 0) target.search = req.originalUrl.slice(queryIndex);
@@ -126,9 +127,8 @@ app.get('/', (_req, res) => {
   res.type('html').send(`<!doctype html><html lang="pt-BR"><meta charset="utf-8"><title>Papel e Código · WhatsApp local</title><style>body{font:16px system-ui;background:#07182d;color:#fff;margin:0;padding:40px}main{max-width:680px;margin:auto;background:#10243e;padding:28px;border-radius:18px}b{color:#dff01f}.ok{color:#56d39a}a{display:inline-block;background:#1677ff;color:white;text-decoration:none;padding:12px 18px;border-radius:10px;font-weight:700}</style><main><h1>Papel e Código</h1><h2>Conector local do WhatsApp</h2><p>Estado atual: <b>${state}</b></p><p>${message}</p><p class="ok">Mantenha esta janela do conector aberta enquanto estiver usando o ERP.</p><a href="/erp/">Abrir ERP local</a></main></html>`);
 });
 
-app.get('/erp', (_req, res) => res.redirect('/erp/'));
-app.get('/erp/', proxyERP);
-app.get('/erp/*asset', proxyERP);
+// Uma única rota montada evita o loop /erp <-> /erp/ no Express.
+app.use('/erp', proxyERP);
 
 app.get('/status', (_req, res) => res.json({ state, message, account, error: lastError, localERP: `${LOCAL_ORIGIN}/erp/` }));
 app.get('/qr', async (_req, res) => {
