@@ -19,8 +19,7 @@ jobs:
           node --check erp-data.js
           node --check quick-ops.js
           node --check focus-v6.js
-          node --check sale-flow-v6.js
-          node --check sale-flow-v7.js
+          node --check sale-flow-v8.js
       - name: Check required front files
         run: |
           test -s index.html
@@ -32,14 +31,14 @@ jobs:
           test -s quick-ops.css
           test -s focus-v6.js
           test -s focus-v6.css
-          test -s sale-flow-v7.js
           test -s sale-flow-v7.css
+          test -s sale-flow-v8.js
           test -s migration-v5-complete.sql
           grep -q 'erp-v5.js' index.html
           grep -q 'erp-v5.css' index.html
           grep -q 'quick-ops.js' config.js
           grep -q 'focus-v6.js' config.js
-          grep -q 'sale-flow-v7.js' config.js
+          grep -q 'sale-flow-v8.js' config.js
           grep -q 'section-dashboard' index.html
           grep -q 'section-customers' index.html
           grep -q 'section-quotes' index.html
